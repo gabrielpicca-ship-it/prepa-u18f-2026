@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Summer Hoops — U18F</title> 
+<title>Summer Hoops — U18F</title>
 
 <!-- ===== ICÔNE DE MARQUE — fichier icon.png à la racine du projet (Vercel) ===== -->
 <!-- Favicon (onglet navigateur, bureau) -->
@@ -21,7 +21,15 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0A0A13">
 <meta name="mobile-web-app-capable" content="yes">
-
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker enregistré !', reg))
+        .catch(err => console.log('Erreur SW:', err));
+    });
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
