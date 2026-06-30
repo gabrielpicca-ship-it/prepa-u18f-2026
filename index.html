@@ -200,6 +200,7 @@
     background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
     padding:16px 16px 8px;margin:6px 0 18px;opacity:0;max-height:0;overflow:hidden;
     transition:opacity .3s ease;
+    scroll-margin-top:16px;
   }
   .week-panel.show{opacity:1;max-height:1000px;padding:16px 16px 14px;}
   .week-panel .wp-title{font-family:'Anton',sans-serif;font-size:15px;text-transform:uppercase;margin-bottom:10px;color:var(--text-dim);letter-spacing:.5px;}
@@ -1257,7 +1258,7 @@ function renderWeekPanel(week){
   Array.prototype.forEach.call(weekPanelList.querySelectorAll('.sess-card'), function(card){
     card.addEventListener('click', function(){ openSession(card.dataset.id); });
   });
-  weekPanel.scrollIntoView({behavior:'smooth', block:'nearest'});
+  weekPanel.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 Array.prototype.forEach.call(document.querySelectorAll('.chip.selectable'), function(chip){
