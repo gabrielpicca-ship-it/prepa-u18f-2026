@@ -21,15 +21,7 @@
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0A0A13">
 <meta name="mobile-web-app-capable" content="yes">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('Service Worker enregistré !', reg))
-        .catch(err => console.log('Erreur SW:', err));
-    });
-  }
-</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -1657,19 +1649,26 @@ function showCongrats(session, earned){
 }
 document.getElementById('btnCongratsHome').addEventListener('click', function(){ goToView('home'); });
 
-/* ---------- Points & persistance (window.storage = équivalent localStorage pour les Artifacts) ---------- */
+/* ---------- Stockage local (vrai navigateur — persiste sur le téléphone, marche hors ligne) ---------- */
+var STORAGE_PREFIX = 'summerhoops_';
+function lsGet(key){
+  try { return localStorage.getItem(STORAGE_PREFIX + key); } catch(e){ return null; }
+}
+function lsSet(key, value){
+  try { localStorage.setItem(STORAGE_PREFIX + key, value); } catch(e){ /* stockage indisponible (navigation privée pleine, etc.) */ }
+}
+
+/* ---------- Points & persistance ---------- */
 var totalPoints = 0;
 function renderPoints(){ document.getElementById('pointsValue').textContent = '🔥 ' + totalPoints + ' PTS'; }
 function addPoints(n){
   totalPoints += n;
   renderPoints();
-  try { window.storage.set('totalPoints', String(totalPoints), false); } catch(e){ /* stockage indisponible */ }
+  lsSet('totalPoints', String(totalPoints));
 }
-async function initPoints(){
-  try {
-    var res = await window.storage.get('totalPoints', false);
-    if(res && res.value){ totalPoints = parseInt(res.value, 10) || 0; }
-  } catch(e){ totalPoints = 0; }
+function initPoints(){
+  var v = lsGet('totalPoints');
+  totalPoints = v ? (parseInt(v, 10) || 0) : 0;
   renderPoints();
 }
 window.setSummerPoints = function(value){ totalPoints = value; renderPoints(); };
@@ -1679,7 +1678,7 @@ var bangersSurvived = 0;
 var bangerAutoHide = null;
 function triggerBangerAlert(){
   bangersSurvived++;
-  try { window.storage.set('bangersSurvived', String(bangersSurvived), false); } catch(e){}
+  lsSet('bangersSurvived', String(bangersSurvived));
   var el = document.getElementById('bangerOverlay');
   el.classList.add('show');
   beep(1000,120,0.32);
@@ -1687,11 +1686,9 @@ function triggerBangerAlert(){
   clearTimeout(bangerAutoHide);
   bangerAutoHide = setTimeout(function(){ el.classList.remove('show'); }, 3200);
 }
-async function initBangerCount(){
-  try {
-    var res = await window.storage.get('bangersSurvived', false);
-    if(res && res.value){ bangersSurvived = parseInt(res.value, 10) || 0; }
-  } catch(e){ bangersSurvived = 0; }
+function initBangerCount(){
+  var v = lsGet('bangersSurvived');
+  bangersSurvived = v ? (parseInt(v, 10) || 0) : 0;
 }
 
 /* ---------- Summer Challenges : détail + interactivité ---------- */
@@ -1702,7 +1699,7 @@ var DEFI_META = {
   grand: {emoji:'🏆', name:"Grand Défi d'Équipe"}
 };
 function todayKey(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
-var iceCoffeeDoneToday = false;
+var iceCoffeeLast = null;
 
 function openDefiDetail(key){
   var meta = DEFI_META[key];
@@ -1723,10 +1720,8 @@ function openDefiDetail(key){
     var st = goldenHourStatus();
     status.innerHTML = st.msg;
   } else if(key==='icecoffee'){
-    var done = false;
-    try { done = (window.__iceCoffeeLast === todayKey()); } catch(e){}
     desc.textContent = "Après une grosse séance, prépare ta boisson de récupération la plus stylée (eau, menthe, citron, thé glacé maison) et partage la photo au groupe.";
-    if(window.__iceCoffeeLast === todayKey()){
+    if(iceCoffeeLast === todayKey()){
       status.innerHTML = '✅ Déjà validé aujourd\'hui — bravo, reviens demain !';
     } else {
       status.innerHTML = 'Pas encore fait aujourd\'hui.';
@@ -1734,8 +1729,8 @@ function openDefiDetail(key){
       action.textContent = '✅ Marquer comme fait (+15 pts)';
       action.onclick = function(){
         addPoints(15);
-        window.__iceCoffeeLast = todayKey();
-        try { window.storage.set('iceCoffeeLastDate', todayKey(), false); } catch(e){}
+        iceCoffeeLast = todayKey();
+        lsSet('iceCoffeeLastDate', iceCoffeeLast);
         showToast('Ice Coffee validé 🧊 +15 pts !');
         closeDefiDetail();
       };
@@ -1755,14 +1750,11 @@ Array.prototype.forEach.call(document.querySelectorAll('.defi-card'), function(c
 Array.prototype.forEach.call(document.querySelectorAll('.defi-mini'), function(card){
   card.addEventListener('click', function(){ openDefiDetail(card.dataset.key); });
 });
-async function initIceCoffee(){
-  try {
-    var res = await window.storage.get('iceCoffeeLastDate', false);
-    if(res && res.value){ window.__iceCoffeeLast = res.value; }
-  } catch(e){ /* rien d'enregistré encore */ }
+function initIceCoffee(){
+  iceCoffeeLast = lsGet('iceCoffeeLastDate');
 }
 
-/* ---------- Prenom de la joueuse (stockage persistant de l'artifact) ---------- */
+/* ---------- Prenom de la joueuse ---------- */
 var currentPlayerName = null;
 function applyPlayerName(name){
   currentPlayerName = name;
@@ -1780,16 +1772,14 @@ function submitOnboarding(){
   if(!name){ input.style.borderColor = '#FF5F6D'; input.focus(); return; }
   applyPlayerName(name);
   hideOnboarding();
-  try { window.storage.set('playerName', name, false); } catch(e){ /* stockage indisponible, on continue quand meme */ }
+  lsSet('playerName', name);
 }
 document.getElementById('onboardBtn').addEventListener('click', submitOnboarding);
 document.getElementById('onboardInput').addEventListener('keydown', function(e){ if(e.key==='Enter'){ submitOnboarding(); } });
 
-async function initPlayerName(){
-  try {
-    var res = await window.storage.get('playerName', false);
-    if(res && res.value){ applyPlayerName(res.value); return; }
-  } catch(e){ /* pas de prenom enregistre -> onboarding */ }
+function initPlayerName(){
+  var name = lsGet('playerName');
+  if(name){ applyPlayerName(name); return; }
   showOnboarding();
 }
 
@@ -1798,6 +1788,15 @@ initPlayerName();
 initPoints();
 initBangerCount();
 initIceCoffee();
+
+/* ---------- Service Worker — fonctionnement hors ligne ---------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').catch(function (err) {
+      console.log('Service worker non enregistré :', err);
+    });
+  });
+}
 </script>
 
 </body>
