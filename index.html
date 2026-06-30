@@ -499,6 +499,30 @@
     background:var(--surface-2);border-radius:14px;padding:10px 12px;line-height:1.5;
   }
 
+  /* ---------- BINGO DE L'ÉTÉ ---------- */
+  .bingo-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:4px 0 6px;
+  }
+  .bingo-cell{
+    position:relative;
+    aspect-ratio:1/1;border-radius:14px;background:var(--surface-2);border:1px solid var(--border);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+    padding:8px;gap:5px;transition:transform .12s ease, background .2s ease, border-color .2s ease;
+  }
+  .bingo-cell:active{transform:scale(0.92);}
+  .bingo-cell .ic{font-size:24px;line-height:1;}
+  .bingo-cell .tx{font-size:10.5px;line-height:1.25;color:var(--text-dim);font-weight:600;}
+  .bingo-cell.done{
+    background:linear-gradient(135deg,rgba(52,232,201,0.22),rgba(31,182,232,0.18));
+    border-color:var(--cyan-1);
+  }
+  .bingo-cell.done .tx{color:var(--text);}
+  .bingo-photo-badge{
+    position:absolute;top:5px;right:5px;font-size:10px;line-height:1;
+    background:rgba(255,210,63,0.18);border-radius:50%;width:17px;height:17px;
+    display:flex;align-items:center;justify-content:center;
+  }
+
   @media (prefers-reduced-motion: reduce){
     *{animation:none !important;transition:none !important;}
   }
@@ -642,6 +666,14 @@
           <div class="tag-row"><span class="tag gold">Bonus final</span><span class="tag live">Phase 3</span></div>
         </div>
       </article>
+      <article class="defi-card" id="defiCardBingo" data-key="bingo">
+        <span class="ico-big">🎲</span>
+        <div>
+          <h3 class="name">Bingo de l'Été</h3>
+          <p class="desc">9 mini-défis fun à cocher tout l'été à ton rythme. Les cases 📸 demandent une photo à partager sur le groupe. Complète la grille pour débloquer le bonus !</p>
+          <div class="tag-row"><span class="tag gold" id="bingoTagProgress">0 / 9</span><span class="tag live">Toutes phases</span></div>
+        </div>
+      </article>
     </section>
 
     <!-- ===== VUE SEANCE (fiche + chrono) ===== -->
@@ -701,6 +733,10 @@
           <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.1 4 3.1 8 3.1 12.94c0 1.74.5 3.36 1.36 4.74L3.5 21.5l3.93-1.03a8.88 8.88 0 0 0 4.6 1.27c4.95 0 8.97-4 8.97-8.94a8.84 8.84 0 0 0-3.4-6.48zM12.05 19.9c-1.43 0-2.78-.39-3.95-1.1l-.28-.17-2.95.78.78-2.88-.18-.3a7.35 7.35 0 0 1-1.13-3.9c0-4.07 3.32-7.38 7.4-7.38a7.36 7.36 0 0 1 7.39 7.38c0 4.08-3.33 7.57-7.08 7.57zm4.04-5.5c-.22-.11-1.3-.64-1.5-.72-.2-.07-.35-.11-.5.11-.15.22-.57.72-.7.87-.13.15-.26.16-.48.05-.22-.1-.93-.34-1.77-1.09-.65-.58-1.1-1.3-1.22-1.52-.13-.22-.01-.34.1-.45.1-.1.22-.27.33-.4.11-.13.15-.23.22-.38.07-.15.04-.28-.03-.39-.07-.11-.5-1.21-.69-1.66-.18-.43-.37-.37-.5-.38-.13 0-.28-.01-.43-.01-.15 0-.39.06-.6.28-.2.22-.78.76-.78 1.85 0 1.09.8 2.14.91 2.29.11.15 1.54 2.35 3.74 3.2 2.2.86 2.2.57 2.6.53.4-.04 1.3-.53 1.48-1.04.18-.51.18-.95.13-1.04-.05-.1-.2-.16-.42-.27z"/></svg>
           Partager ma perf' sur WhatsApp
         </a>
+        <a class="btn-whatsapp" id="btnDuoPhoto" href="#" target="_blank" rel="noopener" style="display:none;margin-top:10px;background:linear-gradient(135deg,var(--violet-1),var(--violet-2));color:#fff;">
+          <span style="font-size:18px;">📸</span>
+          <span id="btnDuoPhotoLabel">Défie une copine en photo</span>
+        </a>
         <button class="btn-ghost" id="btnCongratsHome" style="width:100%;margin-top:12px;padding:13px 0;border-radius:30px;">Retour à l'accueil</button>
       </div>
     </section>
@@ -756,6 +792,22 @@
       <p class="defi-detail-desc" id="defiDetailDesc">Description</p>
       <div class="defi-detail-status" id="defiDetailStatus"></div>
       <button class="tuto-gotit" id="defiDetailAction" style="display:none;">Action</button>
+    </div>
+  </div>
+
+  <!-- ===== BINGO DE L'ÉTÉ ===== -->
+  <div class="tuto-overlay" id="bingoOverlay">
+    <div class="tuto-card" style="max-width:380px;">
+      <button class="tuto-close" id="bingoClose" aria-label="Fermer">✕</button>
+      <div class="defi-detail-emoji">🎲</div>
+      <h3>Bingo de l'Été</h3>
+      <p class="defi-detail-desc">Coche les cases à ton rythme tout l'été. Les cases 📸 ouvrent WhatsApp pour partager ta photo au groupe. Grille complète = bonus !</p>
+      <div class="bingo-grid" id="bingoGrid"></div>
+      <div class="defi-detail-status" id="bingoStatus" style="margin-top:14px;"></div>
+      <a class="btn-whatsapp" id="bingoShareBtn" href="#" target="_blank" rel="noopener" style="margin-top:6px;">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.1 4 3.1 8 3.1 12.94c0 1.74.5 3.36 1.36 4.74L3.5 21.5l3.93-1.03a8.88 8.88 0 0 0 4.6 1.27c4.95 0 8.97-4 8.97-8.94a8.84 8.84 0 0 0-3.4-6.48zM12.05 19.9c-1.43 0-2.78-.39-3.95-1.1l-.28-.17-2.95.78.78-2.88-.18-.3a7.35 7.35 0 0 1-1.13-3.9c0-4.07 3.32-7.38 7.4-7.38a7.36 7.36 0 0 1 7.39 7.38c0 4.08-3.33 7.57-7.08 7.57zm4.04-5.5c-.22-.11-1.3-.64-1.5-.72-.2-.07-.35-.11-.5.11-.15.22-.57.72-.7.87-.13.15-.26.16-.48.05-.22-.1-.93-.34-1.77-1.09-.65-.58-1.1-1.3-1.22-1.52-.13-.22-.01-.34.1-.45.1-.1.22-.27.33-.4.11-.13.15-.23.22-.38.07-.15.04-.28-.03-.39-.07-.11-.5-1.21-.69-1.66-.18-.43-.37-.37-.5-.38-.13 0-.28-.01-.43-.01-.15 0-.39.06-.6.28-.2.22-.78.76-.78 1.85 0 1.09.8 2.14.91 2.29.11.15 1.54 2.35 3.74 3.2 2.2.86 2.2.57 2.6.53.4-.04 1.3-.53 1.48-1.04.18-.51.18-.95.13-1.04-.05-.1-.2-.16-.42-.27z"/></svg>
+        Partager ma grille sur WhatsApp
+      </a>
     </div>
   </div>
 </div>
@@ -1622,9 +1674,33 @@ document.getElementById('btnValidate').addEventListener('click', function(){
     renderIdleTimer();
   } else {
     addPoints(10);
-    showCongrats(currentSession, 10);
+    var n = incrementSessionsValidated();
+    showCongrats(currentSession, 10, n);
   }
 });
+
+/* ---------- Compteur de séances validées + jalons Défi Duo Photo ---------- */
+var TOTAL_REAL_SESSIONS = SESSIONS.length; // 26
+var DUO_MILESTONES = [1, Math.round(TOTAL_REAL_SESSIONS / 2), TOTAL_REAL_SESSIONS]; // 1, 13, 26
+var DUO_MESSAGES = {};
+DUO_MESSAGES[DUO_MILESTONES[0]] = {
+  label: "Défie une copine — 1ère séance !",
+  text: "📸 1ère séance de l'été validée pour moi sur Summer Hoops ! Je défie une copine de l'équipe de poster une photo de sa tenue ou de son setup d'entraînement ici 👀 À qui le tour ?"
+};
+DUO_MESSAGES[DUO_MILESTONES[1]] = {
+  label: "Défie une copine — mi-été !",
+  text: "📸 Mi-été, mi-chemin ! " + DUO_MILESTONES[1] + " séances validées sur Summer Hoops 💪 Je propose une photo d'équipe (même à distance, en selfie chacune) pour fêter ça — qui se lance ?"
+};
+DUO_MESSAGES[DUO_MILESTONES[2]] = {
+  label: "Défie une copine — dernière séance !",
+  text: "📸 Dernière séance de l'été validée, programme Summer Hoops terminé 🏁 Photo de groupe obligatoire pour immortaliser ça avant la reprise — qui s'y met avec moi ?"
+};
+function incrementSessionsValidated(){
+  var v = parseInt(lsGet('sessionsValidatedCount'), 10) || 0;
+  v++;
+  lsSet('sessionsValidatedCount', String(v));
+  return v;
+}
 
 /* ---------- Ecran Felicitations + partage WhatsApp dynamique ---------- */
 function dayLabel(day){
@@ -1641,11 +1717,21 @@ function buildWhatsappMessage(session, earned){
   ];
   return lines.join("\n");
 }
-function showCongrats(session, earned){
+function showCongrats(session, earned, sessionsCount){
   document.getElementById('congratsSessTitle').textContent = session.day + ' · ' + session.title;
   document.querySelector('.congrats-pts').innerHTML = '+' + earned + ' PTS <span>· Total cumulé : ' + totalPoints + ' pts</span>';
   var msg = buildWhatsappMessage(session, earned);
   document.getElementById('btnWhatsapp').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+
+  var duoBtn = document.getElementById('btnDuoPhoto');
+  var duoMsg = sessionsCount ? DUO_MESSAGES[sessionsCount] : null;
+  if(duoMsg){
+    document.getElementById('btnDuoPhotoLabel').textContent = duoMsg.label;
+    duoBtn.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(duoMsg.text);
+    duoBtn.style.display = 'flex';
+  } else {
+    duoBtn.style.display = 'none';
+  }
   goToView('congrats');
 }
 document.getElementById('btnCongratsHome').addEventListener('click', function(){ goToView('home'); });
@@ -1746,7 +1832,9 @@ function closeDefiDetail(){ document.getElementById('defiDetailOverlay').classLi
 document.getElementById('defiDetailClose').addEventListener('click', closeDefiDetail);
 document.getElementById('defiDetailOverlay').addEventListener('click', function(e){ if(e.target.id==='defiDetailOverlay'){ closeDefiDetail(); } });
 Array.prototype.forEach.call(document.querySelectorAll('.defi-card'), function(card){
-  card.addEventListener('click', function(){ openDefiDetail(card.dataset.key); });
+  card.addEventListener('click', function(){
+    if(card.dataset.key === 'bingo'){ openBingo(); } else { openDefiDetail(card.dataset.key); }
+  });
 });
 Array.prototype.forEach.call(document.querySelectorAll('.defi-mini'), function(card){
   card.addEventListener('click', function(){ openDefiDetail(card.dataset.key); });
@@ -1754,6 +1842,98 @@ Array.prototype.forEach.call(document.querySelectorAll('.defi-mini'), function(c
 function initIceCoffee(){
   iceCoffeeLast = lsGet('iceCoffeeLastDate');
 }
+
+/* ---------- Bingo de l'Été (mini-défis à cocher à son rythme) ---------- */
+var BINGO_ITEMS = [
+  {ic:'🌧️', tx:"Séance sous la pluie"},
+  {ic:'🌅', tx:"Séance avant 9h"},
+  {ic:'👯', tx:"Séance à 2 (visio ou en vrai)"},
+  {ic:'🥤', tx:"Boisson recovery maison", photo:true},
+  {ic:'📸', tx:"Photo de ta tenue du jour", photo:true},
+  {ic:'🏀', tx:"Dribble libre 2 min avant"},
+  {ic:'💬', tx:"Encourage une copine sur le groupe"},
+  {ic:'🌙', tx:"Séance en fin de journée"},
+  {ic:'☀️', tx:"Séance en extérieur"},
+];
+var BINGO_TOTAL = BINGO_ITEMS.length;
+var bingoState = new Array(BINGO_TOTAL).fill(false);
+var bingoBonusGiven = false;
+
+function loadBingoState(){
+  var raw = lsGet('bingoState');
+  if(raw){
+    try { var arr = JSON.parse(raw); if(Array.isArray(arr) && arr.length===BINGO_TOTAL){ bingoState = arr; } } catch(e){}
+  }
+  bingoBonusGiven = lsGet('bingoBonusGiven') === '1';
+  updateBingoTag();
+}
+function saveBingoState(){
+  lsSet('bingoState', JSON.stringify(bingoState));
+  updateBingoTag();
+}
+function bingoCount(){ return bingoState.filter(Boolean).length; }
+function updateBingoTag(){
+  var tag = document.getElementById('bingoTagProgress');
+  if(tag) tag.textContent = bingoCount() + ' / ' + BINGO_TOTAL;
+}
+
+function renderBingoGrid(){
+  var grid = document.getElementById('bingoGrid');
+  grid.innerHTML = BINGO_ITEMS.map(function(item, i){
+    var done = bingoState[i];
+    return '<button class="bingo-cell'+(done?' done':'')+'" data-i="'+i+'">'+
+      (item.photo ? '<span class="bingo-photo-badge">📸</span>' : '') +
+      '<span class="ic">'+(done?'✅':item.ic)+'</span>'+
+      '<span class="tx">'+item.tx+'</span>'+
+    '</button>';
+  }).join('');
+  Array.prototype.forEach.call(grid.querySelectorAll('.bingo-cell'), function(cell){
+    cell.addEventListener('click', function(){ toggleBingoCell(parseInt(cell.dataset.i, 10)); });
+  });
+  renderBingoStatus();
+}
+function renderBingoStatus(){
+  var n = bingoCount();
+  var status = document.getElementById('bingoStatus');
+  if(n === BINGO_TOTAL){
+    status.innerHTML = '🎉 Grille complète ! Bravo, t\'as tout coché !';
+  } else {
+    status.innerHTML = n + ' / ' + BINGO_TOTAL + ' cases cochées — encore ' + (BINGO_TOTAL-n) + ' pour la grille complète 💪 <br><span style="font-weight:500;font-size:11px;">📸 = case à valider avec une photo partagée sur le groupe</span>';
+  }
+  var msg = n === BINGO_TOTAL
+    ? "J'ai complété mon Bingo de l'Été Summer Hoops 🎲🏀 " + BINGO_TOTAL + "/" + BINGO_TOTAL + " cases cochées ! Qui me suit ?"
+    : "Mon Bingo de l'Été Summer Hoops 🎲🏀 : " + n + "/" + BINGO_TOTAL + " cases cochées ! On se motive les filles ?";
+  document.getElementById('bingoShareBtn').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+}
+function toggleBingoCell(i){
+  var wasDone = bingoState[i];
+  bingoState[i] = !wasDone;
+  saveBingoState();
+  renderBingoGrid();
+
+  // Case "photo" qu'on vient de cocher : on ouvre WhatsApp avec un texte prêt,
+  // la joueuse n'a plus qu'à joindre sa photo avant d'envoyer (WhatsApp ne permet
+  // pas de joindre une photo automatiquement depuis un lien web).
+  var item = BINGO_ITEMS[i];
+  if(!wasDone && item.photo){
+    var msg = "🎲 Bingo de l'Été Summer Hoops — " + item.tx + " 📸 (ajoute ta photo juste ici avant d'envoyer !)";
+    window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+  }
+
+  if(bingoCount() === BINGO_TOTAL && !bingoBonusGiven){
+    bingoBonusGiven = true;
+    lsSet('bingoBonusGiven', '1');
+    addPoints(30);
+    showToast('🎉 Bingo complet ! +30 pts bonus !');
+  }
+}
+function openBingo(){
+  renderBingoGrid();
+  document.getElementById('bingoOverlay').classList.add('show');
+}
+function closeBingo(){ document.getElementById('bingoOverlay').classList.remove('show'); }
+document.getElementById('bingoClose').addEventListener('click', closeBingo);
+document.getElementById('bingoOverlay').addEventListener('click', function(e){ if(e.target.id==='bingoOverlay'){ closeBingo(); } });
 
 /* ---------- Prenom de la joueuse ---------- */
 var currentPlayerName = null;
@@ -1789,6 +1969,7 @@ initPlayerName();
 initPoints();
 initBangerCount();
 initIceCoffee();
+loadBingoState();
 
 /* ---------- Service Worker — fonctionnement hors ligne ---------- */
 if ('serviceWorker' in navigator) {
