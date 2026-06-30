@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Summer Hoops — U18F</title>
+
+<!-- ===== ICÔNE DE MARQUE — fichier icon.png à la racine du projet (Vercel) ===== -->
+<!-- Favicon (onglet navigateur, bureau) -->
+<link rel="icon" type="image/png" href="/icon.png">
+<link rel="shortcut icon" type="image/png" href="/icon.png">
+
+<!-- iPhone / iPad — icône d'écran d'accueil quand on fait "Sur l'écran d'accueil" -->
+<link rel="apple-touch-icon" href="/icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Summer Hoops">
+
+<!-- Android / Chrome — icône via le manifest (voir manifest.json ci-dessous) -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0A0A13">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A13;
+    --surface:#16171F;
+    --surface-2:#1D1F2B;
+    --border:rgba(255,255,255,0.07);
+    --text:#F5F4FA;
+    --text-dim:#9B99AD;
+    --text-faint:#62607A;
+    --gold:#FFD23F;
+    --flame-1:#FF5F6D;
+    --flame-2:#FFA94D;
+    --cyan-1:#34E8C9;
+    --cyan-2:#1FB6E8;
+    --violet-1:#C04DFF;
+    --violet-2:#FF4DA6;
+    --r-lg:26px;
+    --r-md:18px;
+    --r-sm:12px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:#04040A;
+    font-family:'Poppins',sans-serif;
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:430px;
+    margin:0 auto;
+    min-height:100vh;
+    background:var(--bg);
+    position:relative;
+    overflow-x:hidden;
+    padding-bottom:104px;
+    box-shadow:0 0 80px rgba(0,0,0,0.6);
+  }
+  button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer;}
+  button:focus-visible, .chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .visually-hidden{position:absolute;left:-9999px;}
+  svg{display:block;}
+
+  /* ---------- HEADER ---------- */
+  header{padding:22px 20px 10px;}
+  .wordmark{
+    font-family:'Anton',sans-serif;
+    font-size:13px;
+    letter-spacing:3px;
+    color:var(--text-faint);
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  .wordmark span{color:var(--gold);}
+
+  .story-track{display:flex;gap:4px;margin-bottom:22px;}
+  .story-track i{flex:1;height:4px;border-radius:4px;background:var(--surface-2);}
+
+  .greet-row{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .greet-left{display:flex;align-items:center;gap:12px;min-width:0;}
+  .avatar{
+    width:52px;height:52px;border-radius:50%;
+    background:linear-gradient(135deg,var(--flame-1),var(--flame-2));
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    padding:2px;
+  }
+  .avatar b{
+    width:100%;height:100%;border-radius:50%;background:var(--bg);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Anton',sans-serif;font-size:20px;color:var(--text);
+  }
+  .greet-text h1{
+    font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;margin:0;
+    white-space:nowrap;
+  }
+  .greet-text p{
+    margin:2px 0 0;font-size:12.5px;color:var(--text-dim);
+  }
+
+  .pts-pill{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:8px 14px;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .pts-pill .lbl{
+    font-size:8.5px;letter-spacing:1.2px;color:var(--text-faint);
+    text-transform:uppercase;display:block;margin-bottom:2px;
+  }
+  .pts-pill .val{
+    font-family:'Space Mono',monospace;font-weight:700;font-size:16px;color:var(--gold);
+    text-shadow:0 0 14px rgba(255,210,63,0.55);
+  }
+
+  /* ---------- MAIN / VIEWS ---------- */
+  main{padding:6px 20px 0;}
+  .view{display:none;}
+  .view.active{display:block;animation:fadeIn .35s ease both;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  .section-title{
+    font-family:'Anton',sans-serif;font-size:21px;letter-spacing:.4px;
+    text-transform:uppercase;margin:22px 0 14px;
+  }
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin:22px 0 14px;}
+  .section-head .section-title{margin:0;}
+  .see-all{font-size:12.5px;color:var(--text-dim);font-weight:600;}
+
+  /* ---------- PHASE CARDS ---------- */
+  .phase-card{
+    position:relative;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--r-lg);
+    padding:18px 18px 16px;
+    margin-bottom:14px;
+    overflow:hidden;
+    opacity:0;
+    animation:riseIn .5s ease forwards;
+  }
+  .phase-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  }
+  .phase-card.cyan::before{background:linear-gradient(90deg,var(--cyan-1),var(--cyan-2));}
+  .phase-card.flame::before{background:linear-gradient(90deg,var(--flame-1),var(--flame-2));}
+  .phase-card.violet::before{background:linear-gradient(90deg,var(--violet-1),var(--violet-2));}
+
+  .phase-card.active{box-shadow:0 0 0 1px rgba(52,232,201,0.25), 0 10px 30px -10px rgba(52,232,201,0.35);}
+
+  .phase-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .phase-badge{
+    font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;
+    padding:4px 9px;border-radius:8px;text-transform:uppercase;
+  }
+  .cyan .phase-badge{background:rgba(52,232,201,0.14);color:var(--cyan-1);}
+  .flame .phase-badge{background:rgba(255,138,77,0.14);color:var(--flame-2);}
+  .violet .phase-badge{background:rgba(192,77,255,0.14);color:var(--violet-1);}
+
+  .phase-dates{font-size:11px;color:var(--text-faint);font-family:'Space Mono',monospace;}
+
+  .live-dot{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;color:var(--cyan-1);font-weight:700;letter-spacing:.5px;}
+  .live-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan-1);animation:pulse 1.6s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+  .phase-title{font-family:'Anton',sans-serif;font-size:25px;margin:2px 0 4px;text-transform:uppercase;}
+  .phase-tagline{font-size:13px;color:var(--text-dim);margin:0 0 14px;}
+
+  .weeks-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;margin-bottom:6px;scrollbar-width:none;}
+  .weeks-row::-webkit-scrollbar{display:none;}
+  .chip{
+    flex-shrink:0;font-family:'Space Mono',monospace;font-weight:700;font-size:13px;
+    padding:9px 15px;border-radius:30px;background:var(--surface-2);border:1px solid var(--border);
+    color:var(--text-dim);transition:transform .15s ease, background .2s ease, color .2s ease;
+  }
+  .chip:active{transform:scale(0.93);}
+  .cyan .chip.selectable.selected{background:linear-gradient(135deg,var(--cyan-1),var(--cyan-2));color:#04261F;border-color:transparent;}
+  .flame .chip.selectable.selected{background:linear-gradient(135deg,var(--flame-1),var(--flame-2));color:#2B0E08;border-color:transparent;}
+  .violet .chip.selectable.selected{background:linear-gradient(135deg,var(--violet-1),var(--violet-2));color:#26083A;border-color:transparent;}
+
+  .phase-hint{font-size:11.5px;color:var(--text-faint);margin:6px 0 14px;}
+
+  .progress-wrap{display:flex;align-items:center;gap:10px;}
+  .progress-bar{flex:1;height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden;}
+  .progress-bar i{display:block;height:100%;border-radius:6px;width:0%;}
+  .cyan .progress-bar i{background:linear-gradient(90deg,var(--cyan-1),var(--cyan-2));}
+  .progress-pct{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-faint);}
+
+  /* ---------- WEEK SESSIONS PANEL ---------- */
+  .week-panel{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:16px 16px 8px;margin:6px 0 18px;opacity:0;max-height:0;overflow:hidden;
+    transition:opacity .3s ease;
+  }
+  .week-panel.show{opacity:1;max-height:1000px;padding:16px 16px 14px;}
+  .week-panel .wp-title{font-family:'Anton',sans-serif;font-size:15px;text-transform:uppercase;margin-bottom:10px;color:var(--text-dim);letter-spacing:.5px;}
+  .sess-card{
+    display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+    background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);
+    padding:10px 12px;margin-bottom:10px;transition:transform .15s ease;
+  }
+  .sess-card:active{transform:scale(0.97);}
+  .sess-ico{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .sess-ico svg{width:24px;height:24px;}
+  .sess-meta{min-width:0;flex:1;}
+  .sess-day{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+  .sess-name{font-size:13.5px;font-weight:600;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sess-date{font-size:11px;color:var(--text-faint);margin-top:1px;}
+  .sess-chevron{color:var(--text-faint);flex-shrink:0;}
+  .ic-lundi{background:rgba(52,232,201,0.14);color:var(--cyan-1);}
+  .ic-mercredi{background:rgba(255,138,77,0.16);color:var(--flame-2);}
+  .ic-vendredi{background:rgba(192,77,255,0.16);color:var(--violet-1);}
+
+  /* ---------- DEFIS ---------- */
+  .defis-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;margin-bottom:6px;scrollbar-width:none;}
+  .defis-scroll::-webkit-scrollbar{display:none;}
+  .defi-mini{
+    flex-shrink:0;width:140px;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--r-md);padding:14px;
+  }
+  .defi-mini .ico{font-size:26px;display:block;margin-bottom:8px;}
+  .defi-mini .name{font-family:'Anton',sans-serif;font-size:13px;text-transform:uppercase;line-height:1.25;margin-bottom:6px;}
+  .defi-mini .pts{
+    display:inline-block;font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;
+    color:var(--gold);background:rgba(255,210,63,0.12);padding:3px 8px;border-radius:8px;
+  }
+
+  .defi-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:18px;margin-bottom:14px;display:flex;gap:14px;align-items:flex-start;
+    opacity:0;animation:riseIn .5s ease forwards;
+  }
+  .defi-card .ico-big{font-size:32px;line-height:1;}
+  .defi-card .name{font-family:'Anton',sans-serif;font-size:17px;text-transform:uppercase;margin:0 0 4px;}
+  .defi-card .desc{font-size:12.5px;color:var(--text-dim);margin:0 0 10px;line-height:1.5;}
+  .tag-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .tag{font-size:10px;font-family:'Space Mono',monospace;font-weight:700;padding:3px 9px;border-radius:8px;text-transform:uppercase;}
+  .tag.gold{background:rgba(255,210,63,0.14);color:var(--gold);}
+  .tag.live{background:rgba(52,232,201,0.14);color:var(--cyan-1);}
+  .tag.soon{background:var(--surface-2);color:var(--text-faint);}
+
+  @keyframes riseIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .phase-card:nth-of-type(1){animation-delay:.05s;}
+  .phase-card:nth-of-type(2){animation-delay:.15s;}
+  .phase-card:nth-of-type(3){animation-delay:.25s;}
+  .defi-card:nth-of-type(1){animation-delay:.05s;}
+  .defi-card:nth-of-type(2){animation-delay:.15s;}
+  .defi-card:nth-of-type(3){animation-delay:.25s;}
+
+  /* ---------- BOTTOM NAV ---------- */
+  .bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;
+    max-width:430px;margin:0 auto;
+    background:rgba(22,23,31,0.85);
+    backdrop-filter:blur(18px);
+    border-top:1px solid var(--border);
+    display:flex;justify-content:center;gap:48px;
+    padding:12px 0 calc(10px + env(safe-area-inset-bottom));
+    z-index:40;
+  }
+  .nav-btn{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text-faint);}
+  .nav-btn svg{width:22px;height:22px;}
+  .nav-btn span{font-size:10.5px;font-weight:600;}
+  .nav-btn.active{color:var(--text);}
+  .nav-btn.active svg{color:var(--flame-1);}
+
+  /* ---------- TOAST ---------- */
+  .toast{
+    position:fixed;bottom:96px;left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--surface-2);border:1px solid var(--border);
+    color:var(--text);font-size:13px;font-weight:500;
+    padding:11px 18px;border-radius:30px;
+    box-shadow:0 10px 30px -8px rgba(0,0,0,0.6);
+    opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;
+    max-width:85%;text-align:center;z-index:80;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ====================================================== */
+  /* ---------- SESSION DETAIL VIEW ---------- */
+  /* ====================================================== */
+  #view-session{padding:0;}
+  .sess-header{
+    display:flex;align-items:center;gap:10px;padding:14px 20px 10px;
+    position:sticky;top:0;background:var(--bg);z-index:30;
+  }
+  .back-btn{
+    width:36px;height:36px;border-radius:50%;background:var(--surface);
+    border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .back-btn svg{width:18px;height:18px;color:var(--text);}
+  .sess-header-meta{min-width:0;}
+  .sess-header-day{font-family:'Space Mono',monospace;font-size:10.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;}
+  .sess-header-title{font-family:'Anton',sans-serif;font-size:16px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .session-body{padding:0 20px 20px;}
+
+  .safety-box{
+    display:flex;gap:10px;background:rgba(255,95,109,0.1);border:1px solid rgba(255,95,109,0.3);
+    border-radius:var(--r-md);padding:12px 14px;margin:8px 0 16px;font-size:12.5px;line-height:1.5;color:#FFD7D7;
+  }
+  .safety-box svg{width:20px;height:20px;flex-shrink:0;color:var(--flame-1);margin-top:1px;}
+
+  .sess-dur{font-size:12px;color:var(--text-dim);margin-bottom:16px;}
+
+  /* ---- TIMER CARD (sticky) ---- */
+  .timer-card{
+    position:sticky;top:64px;z-index:25;
+    background:linear-gradient(165deg,var(--surface-2),var(--surface));
+    border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:18px;margin-bottom:18px;
+    box-shadow:0 14px 34px -14px rgba(0,0,0,0.7);
+  }
+  .timer-phase-lbl{
+    font-family:'Space Mono',monospace;font-weight:700;font-size:11.5px;letter-spacing:1.5px;
+    text-transform:uppercase;text-align:center;margin-bottom:6px;
+  }
+  .timer-phase-lbl.effort{color:var(--flame-2);}
+  .timer-phase-lbl.repos{color:var(--cyan-1);}
+  .timer-phase-lbl.prep{color:var(--gold);}
+
+  .timer-ring-wrap{position:relative;width:170px;height:170px;margin:0 auto 10px;}
+  .timer-ring-wrap svg{width:170px;height:170px;transform:rotate(-90deg);}
+  .timer-ring-bg{fill:none;stroke:rgba(255,255,255,0.07);stroke-width:10;}
+  .timer-ring-fg{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .2s linear, stroke .3s ease;}
+  .timer-time{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;font-weight:700;font-size:38px;
+  }
+  .timer-time.pulse{animation:tpulse .55s ease;}
+  @keyframes tpulse{0%{transform:scale(1.18);}100%{transform:scale(1);}}
+
+  .timer-exname{text-align:center;font-weight:700;font-size:14.5px;margin-bottom:2px;padding:0 10px;}
+  .timer-exsub{text-align:center;font-size:11.5px;color:var(--text-faint);margin-bottom:14px;}
+
+  .timer-controls{display:flex;gap:10px;}
+  .btn{
+    flex:1;border-radius:30px;padding:13px 0;text-align:center;font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+  }
+  .btn-start{background:linear-gradient(135deg,var(--flame-1),var(--flame-2));color:#1A0805;}
+  .btn-ghost{background:var(--surface-2);color:var(--text);border:1px solid var(--border);}
+  .btn-skip{background:var(--surface-2);color:var(--text-dim);border:1px solid var(--border);flex:0 0 auto;padding:13px 16px;}
+  .btn-validate{
+    width:100%;background:linear-gradient(135deg,var(--cyan-1),var(--cyan-2));color:#04261F;
+    border-radius:30px;padding:17px 0;text-align:center;font-weight:800;font-size:15.5px;
+    box-shadow:0 12px 26px -10px rgba(52,232,201,0.5);
+  }
+  .step-counter{font-family:'Space Mono',monospace;font-size:11px;color:var(--text-faint);text-align:center;margin-top:10px;}
+
+  /* ---- exercise list ---- */
+  .block-label{
+    font-family:'Anton',sans-serif;font-size:13.5px;letter-spacing:.6px;text-transform:uppercase;
+    color:var(--text-dim);margin:18px 0 10px;
+  }
+  .ex-card{
+    display:flex;gap:12px;align-items:flex-start;background:var(--surface);
+    border:1px solid var(--border);border-radius:var(--r-md);padding:12px;margin-bottom:10px;
+    transition:box-shadow .2s ease, border-color .2s ease;
+  }
+  .ex-card.current{border-color:var(--flame-2);box-shadow:0 0 0 1px var(--flame-2);}
+  .ex-ico{width:46px;height:46px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .ex-ico svg{width:28px;height:28px;}
+  .ex-name{font-weight:700;font-size:13.5px;}
+  .ex-vol{font-size:11.5px;color:var(--text-dim);margin-top:1px;}
+  .ex-note{font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.45;font-style:italic;}
+  .ex-cue{font-size:11px;color:var(--flame-1);margin-top:5px;font-weight:600;line-height:1.4;}
+  .ex-tuto-btn{
+    margin-top:9px;font-size:11px;font-weight:700;color:var(--cyan-1);
+    background:rgba(52,232,201,0.1);border:1px solid rgba(52,232,201,0.25);
+    border-radius:20px;padding:6px 12px;display:inline-flex;align-items:center;gap:5px;
+  }
+  .ex-tuto-btn:active{transform:scale(0.95);}
+
+  .defi-info{
+    margin-top:18px;background:rgba(255,210,63,0.08);border:1px solid rgba(255,210,63,0.25);
+    border-radius:var(--r-md);padding:14px;
+  }
+  .defi-info .di-title{font-family:'Anton',sans-serif;font-size:14px;text-transform:uppercase;color:var(--gold);margin-bottom:5px;}
+  .defi-info .di-text{font-size:12.5px;color:var(--text-dim);line-height:1.5;}
+
+  .done-banner{
+    text-align:center;padding:14px 0 6px;
+  }
+  .done-banner .emoji{font-size:38px;}
+  .done-banner h3{font-family:'Anton',sans-serif;text-transform:uppercase;margin:6px 0 2px;}
+  .done-banner p{font-size:12.5px;color:var(--text-dim);margin:0 0 16px;}
+
+  /* ---------- ECRAN FELICITATIONS ---------- */
+  .congrats-wrap{padding:60px 20px 20px;text-align:center;}
+  .congrats-emoji{font-size:54px;animation:riseIn .6s ease both;}
+  .congrats-title{font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;margin:14px 0 4px;}
+  .congrats-sub{color:var(--text-dim);font-size:14px;margin:0 0 20px;}
+  .congrats-pts{
+    display:inline-block;background:rgba(255,210,63,0.12);border:1px solid rgba(255,210,63,0.3);
+    color:var(--gold);font-family:'Space Mono',monospace;font-weight:700;font-size:15px;
+    padding:10px 16px;border-radius:16px;margin-bottom:30px;
+  }
+  .congrats-pts span{display:block;font-family:'Poppins',sans-serif;font-weight:500;font-size:10.5px;color:var(--text-faint);margin-top:3px;}
+  .btn-whatsapp{
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    background:#25D366;color:#04341B;font-weight:800;font-size:14.5px;
+    border-radius:30px;padding:15px 0;text-decoration:none;
+    box-shadow:0 12px 26px -10px rgba(37,211,102,0.55);
+  }
+
+  /* ---------- ONBOARDING PRENOM ---------- */
+  .onboard-overlay{
+    position:fixed;inset:0;background:rgba(4,4,10,0.92);backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .onboard-overlay.show{opacity:1;pointer-events:auto;}
+  .onboard-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:30px 24px;text-align:center;max-width:340px;width:100%;
+    box-shadow:0 20px 50px -10px rgba(0,0,0,0.7);
+  }
+  .onboard-emoji{font-size:42px;margin-bottom:10px;}
+  .onboard-card h2{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:20px;margin:0 0 14px;line-height:1.3;}
+  .onboard-card p{font-size:13.5px;color:var(--text-dim);margin:0 0 14px;}
+  .onboard-card input{
+    width:100%;background:var(--surface-2);border:1px solid var(--border);border-radius:14px;
+    padding:13px 14px;color:var(--text);font-size:15px;font-family:'Poppins',sans-serif;
+    margin-bottom:14px;text-align:center;
+  }
+  .onboard-card input:focus{outline:2px solid var(--gold);}
+  .onboard-card button{
+    width:100%;background:linear-gradient(135deg,var(--flame-1),var(--flame-2));color:#1A0805;
+    font-weight:800;font-size:15px;border-radius:30px;padding:14px 0;
+  }
+
+  /* ---------- TUTO EXERCICE (overlay) ---------- */
+  .tuto-overlay{
+    position:fixed;inset:0;background:rgba(4,4,10,0.85);backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;z-index:150;padding:20px;
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .tuto-overlay.show{opacity:1;pointer-events:auto;}
+  .tuto-card{
+    position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+    padding:26px 22px 22px;max-width:360px;width:100%;max-height:82vh;overflow-y:auto;
+    box-shadow:0 20px 50px -10px rgba(0,0,0,0.7);
+  }
+  .tuto-close{
+    position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
+    background:var(--surface-2);color:var(--text-dim);font-size:14px;display:flex;align-items:center;justify-content:center;
+  }
+  .tuto-ico{width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+  .tuto-ico svg{width:40px;height:40px;}
+  .tuto-card h3{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:17px;text-align:center;margin:0 0 18px;line-height:1.3;}
+  .tuto-steps{list-style:none;margin:0 0 18px;padding:0;counter-reset:tuto;}
+  .tuto-steps li{display:flex;gap:11px;margin-bottom:13px;font-size:13.5px;line-height:1.5;counter-increment:tuto;}
+  .tuto-steps li::before{
+    content:counter(tuto);flex-shrink:0;width:22px;height:22px;border-radius:50%;margin-top:1px;
+    background:var(--surface-2);color:var(--gold);font-family:'Space Mono',monospace;font-weight:700;font-size:12px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tuto-gotit{
+    width:100%;background:linear-gradient(135deg,var(--cyan-1),var(--cyan-2));color:#04261F;
+    font-weight:800;font-size:14px;border-radius:30px;padding:13px 0;
+  }
+
+  /* ---------- ALERTE BANGER ---------- */
+  .banger-overlay{
+    position:fixed;inset:0;z-index:170;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;opacity:0;transition:opacity .12s ease;
+  }
+  .banger-overlay.show{opacity:1;animation:bangerFlash .3s steps(2) infinite;}
+  .banger-text{
+    font-family:'Anton',sans-serif;font-size:30px;line-height:1.3;text-align:center;color:#fff;
+    text-transform:uppercase;padding:20px;animation:bangerPulse .45s ease infinite;
+    text-shadow:0 0 18px rgba(255,95,109,0.95), 0 0 46px rgba(255,169,77,0.8);
+  }
+  @keyframes bangerFlash{
+    0%,100%{background:rgba(255,60,76,0.55);}
+    50%{background:rgba(255,169,77,0.4);}
+  }
+  @keyframes bangerPulse{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.08);}
+  }
+
+  /* ---------- DETAIL SUMMER CHALLENGE ---------- */
+  .defi-detail-emoji{font-size:42px;text-align:center;margin-bottom:8px;}
+  .defi-detail-desc{font-size:13px;color:var(--text-dim);text-align:center;line-height:1.55;margin:0 0 16px;}
+  .defi-detail-status{
+    font-size:12.5px;font-weight:700;text-align:center;margin-bottom:16px;
+    background:var(--surface-2);border-radius:14px;padding:10px 12px;line-height:1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <header>
+    <div class="wordmark">SUMMER<span>•</span>HOOPS · U18F</div>
+    <div class="story-track" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
+    <div class="greet-row">
+      <div class="greet-left">
+        <div class="avatar"><b id="avatarInitial">?</b></div>
+        <div class="greet-text">
+          <h1 id="greetName">Hello 👋</h1>
+          <p>9 semaines pour exploser la rentrée 🚀</p>
+        </div>
+      </div>
+      <div class="pts-pill">
+        <span class="lbl">Summer Challenge</span>
+        <span class="val" id="pointsValue">🔥 0 PTS</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== VUE ACCUEIL / PROGRAMME ===== -->
+    <section id="view-home" class="view active">
+
+      <h2 class="section-title">Ton programme</h2>
+
+      <!-- PHASE 1 -->
+      <article class="phase-card cyan active" data-phase="1">
+        <div class="phase-top">
+          <span class="phase-badge">Phase 1</span>
+          <span class="live-dot">EN COURS</span>
+        </div>
+        <div class="phase-dates">01 JUIL → 26 JUIL</div>
+        <h3 class="phase-title">Fondation</h3>
+        <p class="phase-tagline">Réveil musculaire & stabilité articulaire 🦵</p>
+        <div class="weeks-row" role="group" aria-label="Semaines de la phase Fondation">
+          <button class="chip selectable" data-week="1">S1</button>
+          <button class="chip selectable" data-week="2">S2</button>
+          <button class="chip selectable" data-week="3">S3</button>
+          <button class="chip selectable" data-week="4">S4</button>
+        </div>
+        <div class="phase-hint">Touche une semaine pour voir ses 2-3 séances 👇</div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><i style="width:0%"></i></div>
+          <span class="progress-pct">0%</span>
+        </div>
+      </article>
+
+      <!-- PHASE 2 -->
+      <article class="phase-card flame" data-phase="2">
+        <div class="phase-top">
+          <span class="phase-badge">Phase 2</span>
+        </div>
+        <div class="phase-dates">27 JUIL → 16 AOÛT</div>
+        <h3 class="phase-title">Intensité</h3>
+        <p class="phase-tagline">Puissance & détente verticale ⚡</p>
+        <div class="weeks-row" role="group" aria-label="Semaines de la phase Intensité">
+          <button class="chip selectable" data-week="5">S5</button>
+          <button class="chip selectable" data-week="6">S6</button>
+          <button class="chip selectable" data-week="7">S7</button>
+        </div>
+        <div class="phase-hint">Touche une semaine pour voir ses 3 séances 👇</div>
+      </article>
+
+      <!-- PHASE 3 -->
+      <article class="phase-card violet" data-phase="3">
+        <div class="phase-top">
+          <span class="phase-badge">Phase 3</span>
+        </div>
+        <div class="phase-dates">17 AOÛT → 30 AOÛT</div>
+        <h3 class="phase-title">Match Ready</h3>
+        <p class="phase-tagline">Agilité & vitesse d'appui 🏁</p>
+        <div class="weeks-row" role="group" aria-label="Semaines de la phase Match Ready">
+          <button class="chip selectable" data-week="8">S8</button>
+          <button class="chip selectable" data-week="9">S9</button>
+        </div>
+        <div class="phase-hint">Touche une semaine pour voir ses 3 séances 👇</div>
+      </article>
+
+      <!-- PANEL SEANCES DE LA SEMAINE -->
+      <div class="week-panel" id="weekPanel">
+        <div class="wp-title" id="weekPanelTitle">Semaine</div>
+        <div id="weekPanelList"></div>
+      </div>
+
+      <div class="section-head">
+        <h2 class="section-title">Défis de l'été 🔥</h2>
+        <button class="see-all" id="seeAllDefis">Voir tout →</button>
+      </div>
+
+      <div class="defis-scroll" id="defisScroll">
+        <div class="defi-mini" data-key="playlist"><span class="ico">🎵</span><div class="name">Playlist Lockdown</div><span class="pts">Bonus fun</span></div>
+        <div class="defi-mini" data-key="goldenhour"><span class="ico">🌅</span><div class="name">Golden Hour Plank</div><span class="pts">+15 PTS</span></div>
+        <div class="defi-mini" data-key="icecoffee"><span class="ico">🧊</span><div class="name">Ice Coffee Aesthetic</div><span class="pts">+15 PTS</span></div>
+      </div>
+
+    </section>
+
+    <!-- ===== VUE DEFIS ===== -->
+    <section id="view-defis" class="view">
+      <h2 class="section-title">Défis de l'été 🔥</h2>
+      <article class="defi-card" id="defiCardPlaylist" data-key="playlist">
+        <span class="ico-big">🎵</span>
+        <div>
+          <h3 class="name">Playlist Lockdown</h3>
+          <p class="desc">Cardio du mercredi. Le "Mode Banger Aléatoire" lance le son d'une coéquipière au hasard — sprint obligatoire pendant tout le titre !</p>
+          <div class="tag-row"><span class="tag gold">Bonus fun</span><span class="tag live">Toutes phases</span></div>
+        </div>
+      </article>
+      <article class="defi-card" id="defiCardGoldenHour" data-key="goldenhour">
+        <span class="ico-big">🌅</span>
+        <div>
+          <h3 class="name">Golden Hour Plank</h3>
+          <p class="desc">Gainage chronométré, déverrouillé entre 20h30 et 21h45. Selfie coucher de soleil à partager pour valider le bonus.</p>
+          <div class="tag-row"><span class="tag gold">+15 PTS</span><span class="tag live">Phase 1</span></div>
+        </div>
+      </article>
+      <article class="defi-card" id="defiCardIceCoffee" data-key="icecoffee">
+        <span class="ico-big">🧊</span>
+        <div>
+          <h3 class="name">Ice Coffee Aesthetic</h3>
+          <p class="desc">Défi recovery : conçois ta boisson fraîche la plus stylée pour l'hydratation post-séance. La plus belle photo double les points du jour.</p>
+          <div class="tag-row"><span class="tag gold">+15 PTS</span><span class="tag live">Phase 2</span></div>
+        </div>
+      </article>
+      <article class="defi-card" id="defiCardGrand" data-key="grand">
+        <span class="ico-big">🏆</span>
+        <div>
+          <h3 class="name">Grand Défi d'Équipe</h3>
+          <p class="desc">Pour clôturer l'été : cumulez fentes et temps de planche en équipe. Badge "Summer Hoops 2026" à débloquer collectivement.</p>
+          <div class="tag-row"><span class="tag gold">Bonus final</span><span class="tag live">Phase 3</span></div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ===== VUE SEANCE (fiche + chrono) ===== -->
+    <section id="view-session" class="view">
+      <div class="sess-header">
+        <button class="back-btn" id="sessBackBtn" aria-label="Retour">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="sess-header-meta">
+          <div class="sess-header-day" id="sessHeaderDay">LUNDI</div>
+          <div class="sess-header-title" id="sessHeaderTitle">Titre de la séance</div>
+        </div>
+      </div>
+
+      <div class="session-body">
+        <div class="sess-dur" id="sessDur">Durée ≈ — </div>
+
+        <div class="safety-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.7 3.86a2 2 0 0 0-3.4 0z"/></svg>
+          <span id="sessSafety">Genou aligné au-dessus du pied à chaque réception/appui. Aucun affaissement vers l'intérieur (valgus) toléré.</span>
+        </div>
+
+        <!-- TIMER CARD -->
+        <div class="timer-card">
+          <div class="timer-phase-lbl prep" id="timerPhaseLbl">PRÊTE ?</div>
+          <div class="timer-ring-wrap">
+            <svg viewBox="0 0 170 170">
+              <circle class="timer-ring-bg" cx="85" cy="85" r="74"></circle>
+              <circle class="timer-ring-fg" id="timerRingFg" cx="85" cy="85" r="74" stroke="#FFA94D" stroke-dasharray="465" stroke-dashoffset="465"></circle>
+            </svg>
+            <div class="timer-time" id="timerTime">00:00</div>
+          </div>
+          <div class="timer-exname" id="timerExName">Touche « Démarrer l'exercice »</div>
+          <div class="timer-exsub" id="timerExSub">pour lancer le chrono guidé de la séance</div>
+
+          <div class="timer-controls" id="timerControls">
+            <button class="btn btn-start" id="btnStart">▶ Démarrer l'exercice</button>
+          </div>
+          <button class="btn-validate" id="btnValidate" style="display:none;margin-top:10px;">Valider ma séance ✅</button>
+          <div class="step-counter" id="stepCounter"></div>
+        </div>
+
+        <div id="blocksContainer"></div>
+        <div id="defiInfoContainer"></div>
+      </div>
+    </section>
+
+    <!-- ===== VUE FELICITATIONS ===== -->
+    <section id="view-congrats" class="view">
+      <div class="congrats-wrap">
+        <div class="congrats-emoji">🎉🏀🔥</div>
+        <h2 class="congrats-title">Séance validée !</h2>
+        <p class="congrats-sub" id="congratsSessTitle">Nom de la séance</p>
+        <div class="congrats-pts">+0 PTS <span>· le système de points arrive à la prochaine étape</span></div>
+
+        <a class="btn-whatsapp" id="btnWhatsapp" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.1 4 3.1 8 3.1 12.94c0 1.74.5 3.36 1.36 4.74L3.5 21.5l3.93-1.03a8.88 8.88 0 0 0 4.6 1.27c4.95 0 8.97-4 8.97-8.94a8.84 8.84 0 0 0-3.4-6.48zM12.05 19.9c-1.43 0-2.78-.39-3.95-1.1l-.28-.17-2.95.78.78-2.88-.18-.3a7.35 7.35 0 0 1-1.13-3.9c0-4.07 3.32-7.38 7.4-7.38a7.36 7.36 0 0 1 7.39 7.38c0 4.08-3.33 7.57-7.08 7.57zm4.04-5.5c-.22-.11-1.3-.64-1.5-.72-.2-.07-.35-.11-.5.11-.15.22-.57.72-.7.87-.13.15-.26.16-.48.05-.22-.1-.93-.34-1.77-1.09-.65-.58-1.1-1.3-1.22-1.52-.13-.22-.01-.34.1-.45.1-.1.22-.27.33-.4.11-.13.15-.23.22-.38.07-.15.04-.28-.03-.39-.07-.11-.5-1.21-.69-1.66-.18-.43-.37-.37-.5-.38-.13 0-.28-.01-.43-.01-.15 0-.39.06-.6.28-.2.22-.78.76-.78 1.85 0 1.09.8 2.14.91 2.29.11.15 1.54 2.35 3.74 3.2 2.2.86 2.2.57 2.6.53.4-.04 1.3-.53 1.48-1.04.18-.51.18-.95.13-1.04-.05-.1-.2-.16-.42-.27z"/></svg>
+          Partager ma perf' sur WhatsApp
+        </a>
+        <button class="btn-ghost" id="btnCongratsHome" style="width:100%;margin-top:12px;padding:13px 0;border-radius:30px;">Retour à l'accueil</button>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigation principale">
+    <button class="nav-btn active" data-view="home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      <span>Accueil</span>
+    </button>
+    <button class="nav-btn" data-view="defis">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3-2 4-2 7a4 4 0 0 0 8 0c0-1-.5-2-1-3 1 1 2 3 2 5a7 7 0 0 1-14 0c0-4 3-6 4-9 .5 1 1.5 1.5 3 0z"/></svg>
+      <span>Défis</span>
+    </button>
+  </nav>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- ===== ONBOARDING PRENOM (1er lancement) ===== -->
+  <div class="onboard-overlay" id="onboardOverlay">
+    <div class="onboard-card">
+      <div class="onboard-emoji">🏀</div>
+      <h2>Bienvenue dans<br>Summer Hoops !</h2>
+      <p>C'est quoi ton prénom ?</p>
+      <input type="text" id="onboardInput" maxlength="20" placeholder="Ton prénom" autocomplete="off">
+      <button id="onboardBtn">C'est parti 🏀</button>
+    </div>
+  </div>
+
+  <!-- ===== TUTO EXERCICE (overlay) ===== -->
+  <div class="tuto-overlay" id="tutoOverlay">
+    <div class="tuto-card">
+      <button class="tuto-close" id="tutoClose" aria-label="Fermer">✕</button>
+      <div class="tuto-ico" id="tutoIco"></div>
+      <h3 id="tutoName">Nom de l'exercice</h3>
+      <ol class="tuto-steps" id="tutoSteps"></ol>
+      <button class="tuto-gotit" id="tutoGotIt">J'ai compris 👍</button>
+    </div>
+  </div>
+
+  <!-- ===== ALERTE BANGER (flash plein écran pendant l'effort) ===== -->
+  <div class="banger-overlay" id="bangerOverlay">
+    <div class="banger-text">🔥 ALERTE BANGER !<br>SPRINT MAXIMAL !</div>
+  </div>
+
+  <!-- ===== DETAIL D'UN SUMMER CHALLENGE ===== -->
+  <div class="tuto-overlay" id="defiDetailOverlay">
+    <div class="tuto-card">
+      <button class="tuto-close" id="defiDetailClose" aria-label="Fermer">✕</button>
+      <div class="defi-detail-emoji" id="defiDetailEmoji">🎵</div>
+      <h3 id="defiDetailName">Nom du défi</h3>
+      <p class="defi-detail-desc" id="defiDetailDesc">Description</p>
+      <div class="defi-detail-status" id="defiDetailStatus"></div>
+      <button class="tuto-gotit" id="defiDetailAction" style="display:none;">Action</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   ICONES — pictogrammes ligne, réutilisés à l'identique du catalogue PDF
+   ===================================================================== */
+function H(cx,cy,r){r=r||11;return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="currentColor" stroke-width="9"/>';}
+function L(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>';}
+function P(pts){var d=pts.map(function(p,i){return (i===0?'M':'L')+p[0]+' '+p[1];}).join(' ');return '<path d="'+d+'" fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>';}
+function G(){return '<line x1="20" y1="138" x2="140" y2="138" stroke="currentColor" stroke-width="4" opacity="0.25"/>';}
+function GY(y){return '<line x1="20" y1="'+y+'" x2="140" y2="'+y+'" stroke="currentColor" stroke-width="4" opacity="0.25"/>';}
+function DA(d){return '<path d="'+d+'" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="4 8"/>';}
+function R(x,y,w,h){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="3" fill="none" stroke="currentColor" stroke-width="6"/>';}
+function TICK(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>';}
+function DOT(cx,cy,r){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r||4)+'" fill="currentColor" stroke="none"/>';}
+
+var ICONS = {
+  squat_bulgare: G()+R(96,118,30,10)+P([[72,86],[92,104],[109,120]])+P([[72,86],[57,112],[50,138]])+L(72,86,70,52)+H(70,40)+L(70,52,50,80)+L(70,52,88,70),
+  rdl_unipodal: G()+P([[80,138],[78,113],[75,90]])+L(75,90,120,84)+L(75,90,35,95)+H(25,93)+L(35,95,30,125),
+  fente_marchee: G()+P([[100,138],[97,113],[75,88]])+P([[45,138],[55,118],[75,88]])+L(75,88,73,52)+H(73,40)+L(73,52,55,70)+L(73,52,92,68),
+  pont_fessier: GY(115)+H(35,108)+L(50,110,85,70)+P([[85,70],[100,95],[98,113]])+L(50,110,38,113),
+  pont_fessier_unilateral: GY(115)+H(35,108)+L(50,110,85,70)+P([[85,70],[100,95],[98,113]])+L(85,70,122,45)+L(50,110,38,113),
+  y_balance: G()+P([[75,138],[73,110],[70,85]])+L(70,85,68,55)+H(68,43)+L(70,85,112,118)+L(68,55,40,60)+L(68,55,96,50),
+  stick_landing: G()+DA('M50 16 Q72 4 95 16')+P([[78,138],[80,112],[75,90]])+L(75,90,72,55)+H(72,43)+P([[75,90],[95,100],[101,118]])+L(72,55,40,48)+L(72,55,105,60),
+  hop_hold: G()+DA('M30 60 Q80 10 128 58')+P([[128,58],[120,50],[134,48]])+P([[88,138],[90,112],[85,90]])+L(85,90,80,55)+H(80,43)+P([[85,90],[62,95],[54,112]])+L(80,55,50,50)+L(80,55,110,62),
+  squat_jump: GY(140)+TICK(60,142,68,148)+TICK(92,142,84,148)+L(76,78,80,118)+L(73,48,76,78)+H(75,35)+L(73,48,53,18)+L(73,48,92,16),
+  skater_jump: GY(140)+DA('M28 92 Q80 42 130 88')+P([[130,88],[121,81],[134,76]])+L(92,70,88,92)+L(88,92,60,110)+L(70,55,92,70)+H(64,44)+L(70,55,46,64)+L(70,55,96,50),
+  tuck_jump: GY(140)+TICK(62,142,70,148)+TICK(90,142,82,148)+L(73,48,76,76)+H(75,35)+P([[76,76],[98,70],[100,84]])+P([[76,76],[56,72],[60,86]])+L(73,48,58,38)+L(73,48,90,36),
+  elan_saut: G()+'<path d="M44 24 L52 8 M52 8 L60 16 M52 8 L46 18" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>'+P([[45,138],[58,118],[75,90]])+P([[75,90],[98,78],[108,90]])+L(75,90,60,58)+H(55,46)+L(60,58,40,75)+L(60,58,78,40),
+  bond_unipodal: GY(130)+P([[72,80],[95,70],[105,82]])+L(72,80,45,100)+L(68,52,72,80)+H(70,40)+L(68,52,85,40)+L(68,52,50,68)+TICK(40,102,48,108),
+  pas_chasses: G()+P([[75,95],[55,118],[45,138]])+P([[75,95],[95,118],[105,138]])+L(75,95,75,60)+H(75,46)+L(75,60,45,75)+L(75,60,105,75)+'<path d="M55 148 L40 148 M40 148 L46 143 M40 148 L46 153" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>'+'<path d="M95 148 L110 148 M110 148 L104 143 M110 148 L104 153" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>',
+  arret_stoppe: G()+DA('M20 88 L55 86')+P([[80,95],[65,118],[60,138]])+P([[80,95],[92,115],[95,132]])+L(80,95,70,62)+H(68,50)+L(70,62,45,55)+L(70,62,95,50)+TICK(90,132,100,132),
+  feinte_depart: G()+P([[72,98],[62,118],[60,138]])+P([[72,98],[100,112],[105,130]])+L(72,98,68,62)+H(66,50)+L(68,62,45,70)+L(68,62,90,55)+DA('M95 125 Q100 118 108 122'),
+  carioca: G()+P([[75,98],[90,118],[60,138]])+P([[75,98],[60,115],[95,135]])+L(75,98,78,60)+H(78,47)+L(78,60,50,55)+L(78,60,100,68)+L(55,148,100,148),
+  navette_pivot: G()+DA('M35 100 Q35 45 80 45 Q125 45 118 92')+P([[118,92],[109,86],[122,80]])+P([[80,90],[55,110],[50,108]])+P([[75,135],[78,112],[80,90]])+L(80,90,72,58)+H(70,46)+L(72,58,50,65)+L(72,58,90,50),
+  acceleration_progressive: G()+TICK(6,118,20,118)+TICK(10,106,28,106)+TICK(15,94,35,94)+P([[45,138],[58,118],[75,90]])+P([[75,90],[98,78],[108,90]])+L(75,90,60,58)+H(55,46)+L(60,58,40,75)+L(60,58,78,40),
+  bird_dog: G()+L(45,95,40,125)+L(85,100,90,125)+L(45,95,85,100)+H(35,85)+L(45,95,15,80)+L(85,100,120,90),
+  plank_walkout: G()+L(72,138,58,92)+L(58,92,30,108)+L(30,108,15,132)+H(25,96),
+  mountain_climbers: G()+H(38,55)+P([[38,55],[50,58],[85,70]])+L(85,70,125,85)+P([[85,70],[66,80],[60,64]])+L(50,58,48,90)+DA('M58 100 Q62 108 70 110'),
+  mountain_climbers_croises: G()+H(38,55)+P([[38,55],[50,58],[85,70]])+L(85,70,125,85)+P([[85,70],[65,62],[55,50]])+L(50,58,48,90)+DA('M70 64 Q60 58 53 52'),
+  plank_jacks: G()+H(35,70)+P([[35,70],[50,72],[95,75]])+L(95,75,132,58)+L(95,75,132,94)+L(50,72,48,100)+TICK(118,55,124,61)+TICK(118,97,124,91),
+  russian_twist: GY(118)+L(70,110,50,80)+H(45,68)+P([[70,110],[95,108],[110,95]])+L(50,80,78,73)+DA('M62 68 Q80 64 90 73'),
+  planche_rotative: G()+H(35,75)+P([[35,75],[50,77],[95,80],[130,85]])+L(50,77,48,105)+L(95,80,102,55)+DA('M55 55 Q85 38 113 56'),
+  squat_lent: G()+P([[58,138],[55,112],[78,100]])+P([[98,138],[101,112],[78,100]])+L(78,100,75,65)+H(73,52)+L(75,65,45,78)+L(75,65,100,72),
+  mobilite_hanche: G()+P([[78,138],[76,112],[73,88]])+L(73,88,70,55)+H(68,43)+L(73,88,100,95)+DA('M85 80 Q108 80 108 98 Q108 112 90 110')+L(70,55,45,60)+L(70,55,92,48),
+  etirement_dynamique: G()+L(68,90,60,138)+L(68,90,105,128)+L(68,90,45,75)+H(38,68)+L(45,75,85,108)+DA('M70 100 Q85 95 95 105'),
+  equipe_celebration: G()+L(50,95,50,135)+L(50,66,50,95)+H(50,55)+L(50,66,35,40)+L(50,66,65,42)+L(95,95,95,135)+L(95,66,95,95)+H(95,55)+L(95,66,80,40)+L(95,66,110,42)+'<path d="M70 28 L74 18 L78 28 L88 30 L80 36 L82 46 L74 40 L66 46 L68 36 L60 30 Z" fill="currentColor" stroke="none"/>',
+  pompes: G()+H(40,93)+P([[40,93],[55,95],[95,100],[130,118]])+P([[55,95],[50,115],[58,128]]),
+  planche: G()+H(35,70)+P([[35,70],[50,72],[95,75],[130,80]])+P([[50,72],[48,95],[60,98]]),
+  planche_laterale: G()+H(40,55)+P([[40,55],[52,60],[90,80],[125,95]])+L(52,60,50,100)+L(52,60,45,30),
+  planche_touches_epaule: G()+H(35,70)+P([[35,70],[50,72],[95,75],[130,80]])+L(50,72,48,100)+P([[75,80],[62,74],[55,68]])+DOT(55,68,5),
+  planche_rotation: G()+H(40,55)+P([[40,55],[52,60],[90,80],[125,95]])+L(52,60,50,100)+DA('M52 35 Q40 60 75 85'),
+  planche_elevation_jambe: G()+H(35,70)+P([[35,70],[50,72],[95,75]])+L(95,75,128,80)+L(95,75,126,54)+L(50,72,48,100),
+  superman: GY(98)+H(28,78)+P([[28,78],[45,70],[85,78],[125,68]])+L(45,70,15,60)
+};
+function svgIcon(key){
+  var body = ICONS[key] || ICONS.planche;
+  return '<svg viewBox="0 0 160 160">'+body+'</svg>';
+}
+
+/* =====================================================================
+   TUTORIELS — 3-4 étapes par type d'exercice (clé = icône)
+   ===================================================================== */
+var TUTORIALS = {
+  squat_bulgare: ["Place le pied arrière surélevé derrière toi (banc, chaise, marche).","Descends en pliant le genou avant jusqu'à environ 90°, genou aligné au-dessus du pied.","Buste droit, légèrement incliné en avant.","Remonte en poussant fort dans le talon avant."],
+  rdl_unipodal: ["Debout sur une jambe, léger fléchissement du genou d'appui.","Bascule le buste vers l'avant en tendant l'autre jambe vers l'arrière (ligne droite tête-dos-jambe).","Les mains descendent vers le sol, dos plat, pas arrondi.","Reviens en poussant dans le talon."],
+  fente_marchee: ["Fais un grand pas en avant.","Descends jusqu'à ce que le genou arrière frôle le sol.","Genou avant aligné au-dessus du pied, jamais vers l'intérieur.","Pousse pour avancer et enchaîne le pas suivant."],
+  pont_fessier: ["Allongée sur le dos, genoux pliés, pieds à plat au sol.","Pousse dans les talons pour lever les hanches.","Serre les fessiers 2 secondes en haut.","Redescends doucement sans cambrer le bas du dos."],
+  pont_fessier_unilateral: ["Même position que le pont fessier, mais une jambe tendue vers le plafond.","Pousse dans le talon de la jambe au sol pour lever les hanches.","Garde le bassin bien droit, sans bascule sur le côté."],
+  y_balance: ["Debout sur une jambe, genou d'appui légèrement fléchi.","Tends l'autre jambe vers l'avant en touchant presque le sol.","Puis sur le côté, puis vers l'arrière (tu dessines un Y).","Genou d'appui aligné au-dessus du 2e orteil à chaque instant."],
+  stick_landing: ["Petit saut vers l'avant, élan modéré.","Réceptionne-toi sur une seule jambe.","Stabilise-toi 3 secondes sans bouger.","Genou aligné, aucun affaissement vers l'intérieur."],
+  hop_hold: ["Saute latéralement d'une jambe vers l'autre.","Réceptionne-toi en stabilisant 2 secondes avant de repartir.","Genou toujours aligné au-dessus du pied à la réception."],
+  squat_jump: ["Position de squat, genoux fléchis, poids équilibré.","Pousse fort dans le sol pour sauter le plus haut possible.","Bras qui accompagnent le mouvement vers le haut.","Réceptionne-toi en amortissant avec les genoux, jamais raides."],
+  skater_jump: ["Pars d'une jambe, bondis latéralement vers le côté opposé.","Réceptionne-toi sur l'autre jambe et stabilise 2 secondes.","Hanche stable, pas d'affaissement du genou vers l'intérieur."],
+  tuck_jump: ["Saute verticalement en ramenant les genoux vers la poitrine.","Réceptionne-toi sur l'avant des pieds, genoux alignés.","Reste légère et silencieuse à la réception."],
+  elan_saut: ["Prends 5m d'élan en accélérant progressivement.","Pose un pied et pousse fort vers le haut pour sauter.","Réceptionne-toi stabilisée 2 secondes, dos droit."],
+  bond_unipodal: ["Sur une jambe, bondis en longueur vers l'avant.","Réceptionne-toi sur la même jambe, genou aligné.","Pas de rotation du tronc à la réception. Stabilise avant de répéter."],
+  pas_chasses: ["Position basse, genoux fléchis, poids sur l'avant des pieds.","Glisse latéralement sans jamais croiser les pieds.","Dos droit, mains actives devant toi (posture défensive)."],
+  arret_stoppe: ["Sprinte à pleine vitesse.","Freine brutalement en 1 à 2 appuis, genoux fléchis.","Genou aligné au-dessus du pied, absorbe avec les hanches, jamais avec le dos."],
+  feinte_depart: ["Position basse, regard relevé.","Avance rapidement un pied comme pour partir d'un côté (jab step).","Replie aussitôt et repars de l'autre côté."],
+  carioca: ["Déplace-toi latéralement en croisant un pied devant l'autre, puis derrière.","Garde les hanches mobiles, le buste orienté vers l'avant.","Reste fluide, ne te redresse pas."],
+  navette_pivot: ["Sprinte jusqu'à la ligne visée.","Touche la ligne avec le pied extérieur et pivote à 180°.","Repars immédiatement à pleine vitesse, genou aligné pendant le pivot."],
+  acceleration_progressive: ["Pars à allure modérée, relâchée.","Augmente progressivement la vitesse sur toute la distance.","Termine proche de ta vitesse maximale, sans à-coup brutal."],
+  bird_dog: ["À quatre pattes, dos neutre (ni creux ni rond).","Tends un bras devant toi et la jambe opposée derrière, en même temps.","Tiens 2 secondes, bassin stable, sans bascule.","Reviens doucement et change de côté."],
+  plank_walkout: ["Debout, plie le buste en avant et pose les mains au sol.","Avance les mains pas à pas jusqu'à la position de planche.","Reviens en marchant les mains vers les pieds, dos plat tout le trajet."],
+  mountain_climbers: ["Position de planche, mains sous les épaules.","Amène un genou vers la poitrine, puis l'autre, en alternant.","Garde le dos plat et les hanches basses, pas de cambrure."],
+  mountain_climbers_croises: ["Même position de planche.","Amène le genou vers le coude opposé (mouvement croisé).","Contrôle la rotation : les hanches ne bougent pas en bloc."],
+  plank_jacks: ["Position de planche, jambes serrées.","Écarte les deux jambes en sautillant, puis ramène-les.","Le bassin ne doit pas remonter, dos plat tout le mouvement."],
+  russian_twist: ["Assise, genoux pliés, pieds légèrement décollés du sol.","Penche le buste légèrement en arrière, dos droit (pas arrondi).","Tourne le buste d'un côté puis de l'autre, mains jointes devant toi."],
+  planche_rotative: ["Position de planche classique.","Tourne le corps pour passer en planche latérale d'un côté.","Reviens au centre puis tourne de l'autre côté. Hanches hautes à chaque transition."],
+  squat_lent: ["Pieds largeur de hanches, descends lentement (environ 3 secondes).","Genoux dans l'axe des pieds, talons au sol.","Remonte avec contrôle, sans précipitation."],
+  mobilite_hanche: ["Debout sur une jambe, genou de l'autre jambe levé.","Dessine de grands cercles avec le genou, vers l'extérieur puis l'intérieur.","Garde le buste stable pendant tout le mouvement."],
+  etirement_dynamique: ["Avance une jambe tendue, talon au sol.","Penche le buste vers l'avant en gardant le dos droit pour sentir l'étirement.","Reviens et recommence en mouvement — pas de maintien statique long."],
+  equipe_celebration: ["Pas de technique ici : c'est le moment de tout donner avec l'équipe !","Encourage tes coéquipières, chaque répétition compte pour le score collectif.","Profite du moment — c'est ça, l'esprit Summer Hoops 🏀"],
+  planche: ["Appui sur les avant-bras et les pieds, corps aligné de la tête aux pieds.","Bassin neutre : pas de creux ni de bosse dans le bas du dos.","Respire normalement, regarde le sol."],
+  pompes: ["Mains un peu plus larges que les épaules, corps gainé.","Descends en pliant les coudes à 45°, sans creuser le dos.","Remonte en poussant fort dans les mains."],
+  superman: ["Allongée sur le ventre, bras tendus devant toi.","Lève en même temps les bras et les jambes, regard vers le sol.","Tiens 2 secondes puis redescends en contrôle."],
+  planche_laterale: ["Allongée sur le côté, appui sur un avant-bras.","Lève les hanches pour aligner tête-bassin-pieds en une ligne droite.","L'autre bras peut pointer vers le plafond pour t'équilibrer."],
+  planche_touches_epaule: ["Position de planche (mains ou avant-bras au sol).","Touche l'épaule opposée avec une main, en alternant.","Le bassin ne doit pas bouger pendant la touche (anti-rotation)."],
+  planche_rotation: ["Pars d'une planche latérale, hanche haute.","Passe le bras du dessus sous le buste (rotation du tronc).","Reviens à la position de départ en contrôlant le mouvement."],
+  planche_elevation_jambe: ["Position de planche classique.","Lève une jambe tendue vers le plafond, sans bouger le bassin.","Redescends en contrôle et change de jambe."]
+};
+
+/* =====================================================================
+   DONNEES — catalogue complet (26 séances réelles, Phases 1, 2, 3)
+   ===================================================================== */
+var DAY_COLOR = { LUNDI:'lundi', MERCREDI:'mercredi', VENDREDI:'vendredi' };
+
+function S(o){ // helper de fabrique de séance, valeurs par défaut
+  o.blocks = o.blocks || [];
+  return o;
+}
+
+var SESSIONS = [
+S({id:'p1s1mer',banger:1,phase:1,week:1,day:'MERCREDI',date:'01/07/2026',title:'Cardio Musique #1',dur:'≈ 20 min · RPE 5-6/10',
+  safety:"Allure conversationnelle — si tu ne peux plus parler, tu ralentis.",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Marche rythmée, talons-fesses, rotations bras",vol:'5 min',w:300,r:0,x:1,ic:'planche',note:"Marche rythmée, talons-fesses, montées de genoux légères, rotations d'épaules et de bras — en musique douce."}]},
+    {lbl:'Corps de séance',items:[{n:"Pas chassés / jumping jacks / skipping",vol:'12 min · allure conversationnelle',w:720,r:0,x:1,ic:'pas_chasses',cue:"1 Banger possible : double l'intensité 20s puis reviens à l'allure de base",bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Étirements actifs (mollets, ischios, quadriceps)",vol:'3 min',w:180,r:0,x:1,ic:'etirement_dynamique',note:"Étire mollets, ischios-jambiers et quadriceps en mouvement, sans forcer."}]},
+  ]}),
+S({id:'p1s1ven',phase:1,week:1,day:'VENDREDI',date:'03/07/2026',title:'Core & Renfo #1',dur:'≈ 30 min',
+  safety:"Bassin aligné, pas de cambrure lombaire sur les pompes et le gainage.",
+  blocks:[
+    {lbl:'Circuit (3 tours)',items:[
+      {n:"Pompes (sur genoux si besoin)",vol:'3 x 8 reps',w:20,r:30,x:3,ic:'pompes',cue:"Corps gainé, coudes à 45°, pas de cambrure lombaire"},
+      {n:"Pont fessier",vol:'3 x 12 reps',w:25,r:30,x:3,ic:'pont_fessier',cue:"Pousser dans les talons"},
+      {n:"Gainage planche classique",vol:'3 x 20s',w:20,r:30,x:3,ic:'planche',cue:"Bassin aligné, pas de creux ni de bosse"},
+      {n:"Mountain climbers lents",vol:'3 x 10/côté',w:20,r:30,x:3,ic:'mountain_climbers',cue:"Genou sous la hanche, dos plat"},
+    ]},
+  ],
+  defi:{title:"🌅 Golden Hour Plank",text:"3 segments de 30s (récup 15s). +15 pts si tu valides les 3 ET partages ta photo coucher de soleil.",timed:{n:"Golden Hour Plank",vol:'3 x 30s',w:30,r:15,x:3,ic:'planche',gated:true}}}),
+
+S({id:'p1s2lun',phase:1,week:2,day:'LUNDI',date:'06/07/2026',title:'Flash Appuis #1',dur:'≈ 35 min',
+  safety:"Genou aligné au-dessus du 2e orteil — aucun affaissement vers l'intérieur (valgus).",
+  blocks:[
+    {lbl:'Activation',items:[{n:"Chevilles, hanches, pont fessier d'activation",vol:'5 min',w:300,r:0,x:1,ic:'mobilite_hanche',note:"Cercles de chevilles (10/sens/jambe), ouvertures de hanche debout (8/jambe), pont fessier d'activation (12 reps)."}]},
+    {lbl:'Proprioception',items:[
+      {n:"Équilibre Y-Balance",vol:'3 circuits/jambe',w:20,r:15,x:3,ic:'y_balance',cue:"Genou aligné au-dessus du 2e orteil"},
+      {n:"Stick the Landing",vol:'3 x 6 sauts',w:15,r:20,x:3,ic:'stick_landing',cue:"Aucun affaissement du genou à la réception"},
+    ]},
+    {lbl:'Circuit Force — EMOM 12 min (x4 tours)',items:[
+      {n:"Squat bulgare",vol:'8-10 reps/jambe',w:30,r:30,x:4,ic:'squat_bulgare',cue:"Genou avant aligné, ne part pas vers l'intérieur"},
+      {n:"Single-Leg RDL",vol:'8 reps/jambe',w:25,r:35,x:4,ic:'rdl_unipodal',cue:"Dos plat, hanche qui recule"},
+      {n:"Planche latérale",vol:'30-40s/côté',w:35,r:25,x:4,ic:'planche_laterale',cue:"Hanche haute, corps aligné"},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Mobilité chevilles/genoux",vol:'2 min',w:120,r:0,x:1,ic:'mobilite_hanche',note:"Quelques cercles de chevilles et flexions de genoux pour terminer en douceur."}]},
+  ]}),
+S({id:'p1s2mer',banger:2,phase:1,week:2,day:'MERCREDI',date:'08/07/2026',title:'Cardio Musique #2',dur:'≈ 20 min · RPE 5-6/10 · 2 Bangers',
+  safety:"Allure conversationnelle, sauf sur les 2 Bangers (25s chacun).",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Identique S1, enchaîné plus rapidement",vol:'5 min',w:300,r:0,x:1,ic:'planche',note:"Même échauffement que la Semaine 1 (marche, talons-fesses, rotations bras), juste un peu plus rythmé."}]},
+    {lbl:'Corps de séance',items:[{n:"Pas latéraux croisés + talons-fesses rythmés",vol:'12 min',w:720,r:0,x:1,ic:'pas_chasses',cue:"2 Bangers : double intensité 25s à chaque déclenchement",bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Étirements actifs",vol:'3 min',w:180,r:0,x:1,ic:'etirement_dynamique',note:"Étirements actifs : mollets, ischios, quadriceps, en mouvement."}]},
+  ]}),
+S({id:'p1s2ven',phase:1,week:2,day:'VENDREDI',date:'10/07/2026',title:'Core & Renfo #2',dur:'≈ 30 min',
+  safety:"Bassin stable, pas de bascule sur le côté (pont fessier unilatéral).",
+  blocks:[
+    {lbl:'Circuit (3 tours)',items:[
+      {n:"Pompes (pieds au sol)",vol:'3 x 10 reps',w:22,r:30,x:3,ic:'pompes',cue:"Corps gainé du talon à la nuque"},
+      {n:"Pont fessier unilatéral",vol:'3 x 10/jambe',w:25,r:30,x:3,ic:'pont_fessier_unilateral',cue:"Bassin stable, pas de bascule sur le côté"},
+      {n:"Planche, touches d'épaule alternées",vol:'3 x 10/côté',w:25,r:30,x:3,ic:'planche_touches_epaule',cue:"Bassin immobile pendant la touche"},
+      {n:"Mountain climbers",vol:'3 x 12/côté',w:22,r:30,x:3,ic:'mountain_climbers',cue:"Dos plat, hanches basses"},
+    ]},
+  ],
+  defi:{title:"🌅 Golden Hour Plank",text:"2 segments de 45s (récup 15s) — ou 1min00 en continu. +15 pts + photo coucher de soleil.",timed:{n:"Golden Hour Plank",vol:'2 x 45s',w:45,r:15,x:2,ic:'planche',gated:true}}}),
+
+S({id:'p1s3lun',phase:1,week:3,day:'LUNDI',date:'13/07/2026',title:'Flash Appuis #2',dur:'≈ 38 min',
+  safety:"Genou aligné, pas de valgus à la réception — y compris sur les sauts latéraux.",
+  blocks:[
+    {lbl:'Activation',items:[{n:"Chevilles + rotations de tronc",vol:'5 min',w:300,r:0,x:1,ic:'mobilite_hanche',note:"Cercles de chevilles + rotations de tronc (bras tendus, rotation lente du buste), 8 répétitions par sens."}]},
+    {lbl:'Proprioception',items:[
+      {n:"Équilibre Y-Balance",vol:'3 circuits/jambe',w:20,r:15,x:3,ic:'y_balance'},
+      {n:"NOUVEAU — Hop latéral & hold",vol:'3 x 8/jambe',w:20,r:20,x:3,ic:'hop_hold',cue:"Genou aligné, pas de valgus à la réception"},
+      {n:"Équilibre yeux fermés",vol:'2 x 20s/jambe',w:20,r:15,x:2,ic:'y_balance'},
+    ]},
+    {lbl:'Circuit Force — EMOM 16 min (x4 tours)',items:[
+      {n:"Squat bulgare",vol:'10-12 reps/jambe',w:35,r:25,x:4,ic:'squat_bulgare',cue:"Genou avant aligné"},
+      {n:"Single-Leg RDL (tempo 4s)",vol:'10 reps/jambe',w:30,r:30,x:4,ic:'rdl_unipodal',cue:"Dos plat, hanche qui recule"},
+      {n:"Fentes avant marchées",vol:'8 reps/jambe',w:25,r:35,x:4,ic:'fente_marchee',cue:"Genou avant aligné au-dessus du pied"},
+      {n:"Planche latérale + rotation",vol:'8 reps/côté',w:30,r:30,x:4,ic:'planche_rotation',cue:"Bassin stable pendant la touche"},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Mobilité chevilles/genoux",vol:'2 min',w:120,r:0,x:1,ic:'mobilite_hanche',note:"Quelques cercles de chevilles et flexions de genoux pour terminer en douceur."}]},
+  ]}),
+S({id:'p1s3mer',banger:[2,3],phase:1,week:3,day:'MERCREDI',date:'15/07/2026',title:'Cardio Musique #3',dur:'≈ 23 min · RPE 6/10 · 2-3 Bangers',
+  safety:"On relève l'allure de fond mais on reste sous le seuil du vrai fractionné.",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Footwork léger",vol:'5 min',w:300,r:0,x:1,ic:'planche',note:"Petits appuis rythmés et légers pour activer les jambes sans les fatiguer."}]},
+    {lbl:'Corps de séance',items:[{n:"Base rythmée + sauts pieds joints (30s séquences)",vol:'15 min',w:900,r:0,x:1,ic:'pas_chasses',cue:"2-3 Bangers de 30s chacun",bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Étirements actifs",vol:'3 min',w:180,r:0,x:1,ic:'etirement_dynamique',note:"Étirements actifs : mollets, ischios, quadriceps, en mouvement."}]},
+  ]}),
+S({id:'p1s3ven',phase:1,week:3,day:'VENDREDI',date:'17/07/2026',title:'Core & Renfo #3',dur:'≈ 32 min',
+  safety:"Bassin ne tourne pas pendant l'élévation de jambe.",
+  blocks:[
+    {lbl:'Circuit (3 tours)',items:[
+      {n:"Pompes (large/serré alternée)",vol:'3 x 12 reps',w:25,r:30,x:3,ic:'pompes'},
+      {n:"Pont fessier unilatéral en marche",vol:'3 x 10/jambe',w:25,r:30,x:3,ic:'pont_fessier_unilateral'},
+      {n:"Planche + élévation de jambe alternée",vol:'3 x 12/côté',w:28,r:30,x:3,ic:'planche_elevation_jambe',cue:"Bassin ne tourne pas pendant l'élévation"},
+      {n:"Extension dorsale (superman)",vol:'3 x 12 reps',w:25,r:30,x:3,ic:'superman'},
+    ]},
+  ],
+  defi:{title:"🌅 Golden Hour Plank",text:"Cible : 1min15 en continu. +15 pts + photo coucher de soleil.",timed:{n:"Golden Hour Plank",vol:'1 x 1min15',w:75,r:0,x:1,ic:'planche',gated:true}}}),
+
+S({id:'p1s4lun',phase:1,week:4,day:'LUNDI',date:'20/07/2026',title:'Flash Appuis #3',dur:'≈ 40 min · la plus exigeante',
+  safety:"Pic de la Phase 1 : on valide que l'alignement tient sous fatigue.",
+  blocks:[
+    {lbl:'Activation',items:[{n:"Flow dynamique complet",vol:'6 min',w:360,r:0,x:1,ic:'mobilite_hanche',note:"Chevilles, hanches, rotations de tronc, balancers de jambe contrôlés — on réveille tout le corps."}]},
+    {lbl:'Proprioception (pic)',items:[
+      {n:"Hop & Hold multidirectionnel",vol:'3 x 6/direction',w:25,r:20,x:3,ic:'hop_hold',cue:"Genou aligné dans les 3 directions"},
+      {n:"Équilibre sur surface instable",vol:'3 x 20s/jambe',w:20,r:15,x:3,ic:'y_balance'},
+      {n:"Stick the Landing + contre-mouvement",vol:'4 x 6 sauts',w:20,r:20,x:4,ic:'stick_landing'},
+    ]},
+    {lbl:'Circuit Force — EMOM 16 min, 5 ex (x4 tours)',items:[
+      {n:"Squat bulgare + pulse final",vol:'10-12 reps/jambe',w:35,r:25,x:4,ic:'squat_bulgare'},
+      {n:"Single-Leg RDL avec repère",vol:'10 reps/jambe',w:32,r:28,x:4,ic:'rdl_unipodal'},
+      {n:"Fentes marchées, genou haut",vol:'10 reps/jambe',w:28,r:32,x:4,ic:'fente_marchee',cue:"Genou avant aligné à chaque appui"},
+      {n:"Planche complète + élévation jambe",vol:'10 reps/côté',w:30,r:30,x:4,ic:'planche_elevation_jambe'},
+      {n:"Pont fessier unilatéral",vol:'12 reps/jambe',w:28,r:32,x:4,ic:'pont_fessier_unilateral'},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Mobilité chevilles/genoux",vol:'3 min',w:180,r:0,x:1,ic:'mobilite_hanche',note:"Quelques cercles de chevilles et flexions de genoux pour terminer en douceur."}]},
+  ]}),
+S({id:'p1s4mer',banger:3,phase:1,week:4,day:'MERCREDI',date:'22/07/2026',title:'Cardio Musique #4',dur:'≈ 25 min · RPE 6/10 · 3 Bangers · volume max Phase 1',
+  safety:"Dernière séance continue avant le fractionné strict de la Phase 2.",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Footwork léger",vol:'5 min',w:300,r:0,x:1,ic:'planche',note:"Petits appuis rythmés et légers pour activer les jambes sans les fatiguer."}]},
+    {lbl:'Corps de séance',items:[{n:"Base rythmée + sauts pieds joints (45s) + variations de pas",vol:'17 min',w:1020,r:0,x:1,ic:'pas_chasses',cue:"3 Bangers de 35-40s chacun",bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Étirements + respiration",vol:'3 min',w:180,r:0,x:1,ic:'etirement_dynamique',note:"Étirements actifs des jambes + respiration profonde pour faire redescendre le rythme cardiaque."}]},
+  ]}),
+S({id:'p1s4ven',phase:1,week:4,day:'VENDREDI',date:'24/07/2026',title:'Core & Renfo #4 + Bilan Fondation',dur:'≈ 30 min · dernière séance Phase 1',
+  safety:"Test final : valide la progression de gainage construite sur 4 semaines.",
+  blocks:[
+    {lbl:'Circuit Force — EMOM 12 min (x4 tours)',items:[
+      {n:"Pompes (variation la plus avancée)",vol:'10-12 reps',w:30,r:30,x:4,ic:'pompes'},
+      {n:"Pont fessier unilatéral",vol:'12 reps/jambe',w:30,r:30,x:4,ic:'pont_fessier_unilateral'},
+      {n:"Gainage planche latérale",vol:'40s/côté',w:40,r:20,x:4,ic:'planche_laterale'},
+      {n:"Mountain climbers",vol:'14 reps/côté',w:25,r:35,x:4,ic:'mountain_climbers'},
+    ]},
+  ],
+  defi:{title:"🌅 Golden Hour Plank — TEST FINAL",text:"Cible : 1min30 en continu. +20 pts spécial « Fondation validée » + photo de groupe !",timed:{n:"TEST FINAL — Plank",vol:'1 x 1min30',w:90,r:0,x:1,ic:'planche',gated:true}}}),
+
+S({id:'p2s5lun',phase:2,week:5,day:'LUNDI',date:'27/07/2026',title:'Pliométrie & Explosivité #1',dur:'≈ 40 min · 1er contact saut maximal',
+  safety:"Réception amortie chevilles→genoux→hanches. Récup complète = qualité, pas fatigue.",
+  blocks:[
+    {lbl:'Activation nerveuse',items:[
+      {n:"Pieds rapides sur place",vol:'4 x 15s',w:15,r:20,x:4,ic:'acceleration_progressive'},
+      {n:"Pogo jumps",vol:'3 x 10 sauts',w:10,r:30,x:3,ic:'squat_jump'},
+      {n:"Montées de genoux sur 10m",vol:'2 allers-retours',w:20,r:10,x:2,ic:'acceleration_progressive'},
+    ]},
+    {lbl:'Corps de séance — triple extension',items:[
+      {n:"Squat Jump (triple extension)",vol:'4 séries de 4 sauts',w:10,r:70,x:4,ic:'squat_jump',cue:"Réception amortie, genou aligné, pas de valgus"},
+      {n:"Skater Jump stabilisé",vol:'3 séries de 5/côté',w:12,r:60,x:3,ic:'skater_jump',cue:"Hanche stable, pas d'affaissement interne"},
+      {n:"Sprint d'élan (5m) + saut vertical",vol:'4 répétitions',w:8,r:85,x:4,ic:'elan_saut',cue:"Réception stabilisée 2s, dos droit"},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Marche + étirements légers",vol:'4 min',w:240,r:0,x:1,ic:'etirement_dynamique',note:"Marche calme quelques instants, puis étire légèrement les jambes (sans forcer)."}]},
+  ]}),
+S({id:'p2s5mer',banger:1,phase:2,week:5,day:'MERCREDI',date:'29/07/2026',title:'Cardio High-Tempo #1',dur:'≈ 22 min · 1er vrai fractionné 15s/15s',
+  safety:"15s effort quasi maximal (RPE 8-9/10) / 15s récup stricte.",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Footwork + 3 accélérations progressives 15m",vol:'6 min',w:360,r:0,x:1,ic:'acceleration_progressive',note:"Footwork léger puis 3 accélérations progressives sur 15m pour préparer le sprint."}]},
+    {lbl:'Bloc 1 — 15s/15s',items:[{n:"Sprint linéaire / navette 5m",vol:'8 répétitions',w:15,r:15,x:8,ic:'acceleration_progressive',cue:"1 Banger possible : sprint all-out comme une contre-attaque",bangerEligible:true}]},
+    {lbl:'Bloc 2 — 15s/15s',pre:150,items:[{n:"Sprint linéaire / navette 5m",vol:'8 répétitions',w:15,r:15,x:8,ic:'acceleration_progressive',bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Marche, étirements actifs",vol:'4 min',w:240,r:0,x:1,ic:'etirement_dynamique',note:"Marche calme + étirements actifs des jambes."}]},
+  ]}),
+S({id:'p2s5ven',phase:2,week:5,day:'VENDREDI',date:'31/07/2026',title:'Gainage Dynamique #1',dur:'≈ 32 min',
+  safety:"Bassin stable, dos neutre — l'anti-rotation protège le ballon en duel.",
+  blocks:[
+    {lbl:'Circuit Force — EMOM 12 min (x3 tours)',items:[
+      {n:"Bird Dog (anti-rotation)",vol:'8 reps/côté',w:20,r:40,x:3,ic:'bird_dog',cue:"Bassin stable, pas de bascule, dos neutre"},
+      {n:"Plank Walkout",vol:'8 reps',w:20,r:40,x:3,ic:'plank_walkout',cue:"Dos plat sur tout le trajet"},
+      {n:"Mountain climbers croisés",vol:'12 reps/côté',w:25,r:35,x:3,ic:'mountain_climbers_croises',cue:"Bassin bas, rotation contrôlée"},
+      {n:"Russian Twist (pieds décollés)",vol:'14 reps (7/côté)',w:20,r:40,x:3,ic:'russian_twist',cue:"Rotation depuis le tronc, pas les bras"},
+    ]},
+  ],
+  defi:{title:"🧊 Ice Coffee Aesthetic",text:"Après la séance, prépare ta boisson recovery la plus stylée et partage la photo. La plus soignée double les points du jour."}}),
+
+S({id:'p2s6lun',phase:2,week:6,day:'LUNDI',date:'03/08/2026',title:'Pliométrie & Explosivité #2',dur:'≈ 42 min · multidirection',
+  safety:"+10% de volume, +1 niveau de complexité — on complexifie avant de charger.",
+  blocks:[
+    {lbl:'Activation',items:[
+      {n:"Pieds rapides sur place",vol:'4 x 15s',w:15,r:20,x:4,ic:'acceleration_progressive'},
+      {n:"Pogo jumps",vol:'3 x 12',w:12,r:30,x:3,ic:'squat_jump'},
+      {n:"NOUVEAU — Skip latéral + ouverture hanche",vol:'2 allers-retours 10m',w:20,r:10,x:2,ic:'mobilite_hanche'},
+    ]},
+    {lbl:'Corps de séance',items:[
+      {n:"Tuck Jump (genoux à la poitrine)",vol:'3 séries de 5 sauts',w:10,r:75,x:3,ic:'tuck_jump',cue:"Réception amortie sur l'avant-pied"},
+      {n:"Bonds latéraux enchaînés",vol:'3 séries de 4/côté',w:12,r:75,x:3,ic:'skater_jump',cue:"Pas d'affaissement à la réception finale"},
+      {n:"Sprint d'élan + saut, contre-mouvement",vol:'4-5 répétitions',w:10,r:90,x:5,ic:'elan_saut',cue:"Réception stabilisée 2s avant de relâcher"},
+      {n:"NOUVEAU — Saut vertical + déplacement latéral",vol:'3 séries de 3',w:10,r:90,x:3,ic:'hop_hold',cue:"Genou aligné réception ET 1er appui latéral"},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Marche, étirements",vol:'4 min',w:240,r:0,x:1,ic:'etirement_dynamique',note:"Marche calme + étirements légers des jambes."}]},
+  ]}),
+S({id:'p2s6mer',banger:2,phase:2,week:6,day:'MERCREDI',date:'05/08/2026',title:'Cardio High-Tempo #2',dur:'≈ 25 min · montée en volume',
+  safety:"Ratio 1:1 conservé, volume de répétitions augmenté (+25%).",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Footwork léger",vol:'6 min',w:360,r:0,x:1,ic:'acceleration_progressive',note:"Petits appuis rythmés et légers pour activer les jambes sans les fatiguer."}]},
+    {lbl:'Bloc 1 — 15s/15s',items:[{n:"Navette courte 5m (spécifique basket)",vol:'10 répétitions',w:15,r:15,x:10,ic:'navette_pivot',cue:"2 Bangers répartis sur les 2 blocs",bangerEligible:true}]},
+    {lbl:'Bloc 2 — 15s/15s',pre:120,items:[{n:"Navette courte 5m",vol:'10 répétitions',w:15,r:15,x:10,ic:'navette_pivot',bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Marche, étirements",vol:'4 min',w:240,r:0,x:1,ic:'etirement_dynamique',note:"Marche calme + étirements légers des jambes."}]},
+  ]}),
+S({id:'p2s6ven',phase:2,week:6,day:'VENDREDI',date:'07/08/2026',title:'Gainage Dynamique #2',dur:'≈ 34 min',
+  safety:"Hanches hautes à chaque transition — la planche rotative travaille le transfert de force entre les plans.",
+  blocks:[
+    {lbl:'Circuit Force — EMOM 16 min (x4 tours)',items:[
+      {n:"Bird Dog + extension complète",vol:'10 reps/côté',w:25,r:35,x:4,ic:'bird_dog'},
+      {n:"Plank Jacks",vol:'14 reps',w:22,r:38,x:4,ic:'plank_jacks',cue:"Bassin ne remonte pas, dos plat"},
+      {n:"Mountain climbers croisés",vol:'14 reps/côté',w:28,r:32,x:4,ic:'mountain_climbers_croises'},
+      {n:"NOUVEAU — Planche rotative",vol:'8 rotations (4/côté)',w:25,r:35,x:4,ic:'planche_rotative',cue:"Hanches hautes à chaque transition"},
+    ]},
+  ],
+  defi:{title:"🧊 Ice Coffee Aesthetic",text:"La boisson de la semaine doit être encore plus soignée que la précédente !"}}),
+
+S({id:'p2s7lun',phase:2,week:7,day:'LUNDI',date:'10/08/2026',title:'Pliométrie & Explosivité #3',dur:'≈ 45 min · pic de puissance',
+  safety:"Dernier palier avant la Phase 3 : qualité maximale, pas la fatigue.",
+  blocks:[
+    {lbl:'Activation',items:[
+      {n:"Pieds rapides",vol:'4 x 15s',w:15,r:20,x:4,ic:'acceleration_progressive'},
+      {n:"Pogo jumps",vol:'3 x 12',w:12,r:30,x:3,ic:'squat_jump'},
+      {n:"Skip latéral + genoux rapide",vol:'2 allers-retours',w:20,r:10,x:2,ic:'mobilite_hanche'},
+    ]},
+    {lbl:'Corps de séance — pic',items:[
+      {n:"Squat Jump maximal",vol:'4 séries de 5 sauts',w:12,r:90,x:4,ic:'squat_jump',cue:"Vise la hauteur max, genou aligné"},
+      {n:"Bonds multidirectionnels",vol:'3 séries de 6',w:15,r:90,x:3,ic:'hop_hold',cue:"Chaque réception stabilisée avant le bond suivant"},
+      {n:"Combo sprint + saut + sprint latéral",vol:'4 répétitions',w:12,r:105,x:4,ic:'elan_saut',cue:"Réception stabilisée 2s avant de repartir"},
+      {n:"NOUVEAU — Bond unipodal",vol:'3 séries de 4/jambe',w:12,r:75,x:3,ic:'bond_unipodal',cue:"Genou aligné, pas de rotation du tronc"},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Transition mentale vers la Phase 3",vol:'4 min',w:240,r:0,x:1,ic:'etirement_dynamique',note:"On souffle, on s'étire légèrement, et on visualise déjà la vitesse de jeu qui arrive."}]},
+  ]}),
+S({id:'p2s7mer',banger:3,phase:2,week:7,day:'MERCREDI',date:'12/08/2026',title:'Cardio High-Tempo #3',dur:'≈ 27 min · volume max Phase 2',
+  safety:"3 blocs, intensité alternée (sprint / navette / glissements défensifs).",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Footwork léger",vol:'6 min',w:360,r:0,x:1,ic:'acceleration_progressive',note:"Petits appuis rythmés et légers pour activer les jambes sans les fatiguer."}]},
+    {lbl:'Bloc 1 — sprint linéaire',items:[{n:"15s/15s",vol:'10 répétitions',w:15,r:15,x:10,ic:'acceleration_progressive',cue:"3 Bangers répartis sur les 3 blocs — le pic de l'été",bangerEligible:true}]},
+    {lbl:'Bloc 2 — navette',pre:120,items:[{n:"15s/15s",vol:'10 répétitions',w:15,r:15,x:10,ic:'navette_pivot',bangerEligible:true}]},
+    {lbl:'Bloc 3 — glissements défensifs',pre:120,items:[{n:"15s/15s",vol:'10 répétitions',w:15,r:15,x:10,ic:'pas_chasses',bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Mobilité chevilles/genoux",vol:'4 min',w:240,r:0,x:1,ic:'etirement_dynamique',note:"Quelques cercles de chevilles et flexions de genoux pour terminer en douceur."}]},
+  ]}),
+S({id:'p2s7ven',phase:2,week:7,day:'VENDREDI',date:'14/08/2026',title:'Gainage Dynamique #3 + Bilan Intensité',dur:'≈ 36 min · la plus intense de la Phase 2',
+  safety:"Contrôle de la rotation sous fatigue — transférable à la fin de match.",
+  blocks:[
+    {lbl:'Circuit Force — EMOM 15 min, 5 ex (x3 tours)',items:[
+      {n:"Bird Dog + extension complète",vol:'10 reps/côté',w:25,r:35,x:3,ic:'bird_dog'},
+      {n:"Plank Jacks",vol:'16 reps',w:25,r:35,x:3,ic:'plank_jacks'},
+      {n:"Mountain climbers croisés",vol:'16 reps/côté',w:28,r:32,x:3,ic:'mountain_climbers_croises'},
+      {n:"Planche rotative",vol:'10 rotations (5/côté)',w:28,r:32,x:3,ic:'planche_rotative'},
+      {n:"NOUVEAU — Plank Walkout + pompe",vol:'6 reps',w:22,r:38,x:3,ic:'plank_walkout'},
+    ]},
+  ],
+  defi:{title:"🏁 Test final + 🧊 Ice Coffee bonus",text:"Mountain Climbers croisés : max de reps en 30s, chronométré. +20 pts « Intensité validée » pour la plus belle photo Ice Coffee.",timed:{n:"TEST — Mountain Climbers croisés",vol:'max reps en 30s',w:30,r:0,x:1,ic:'mountain_climbers_croises'}}}),
+
+S({id:'p3s8lun',phase:3,week:8,day:'LUNDI',date:'17/08/2026',title:'Agilité, Dissociation & Vitesse d\'appuis #1',dur:'≈ 35 min',
+  safety:"Au freinage comme à la réception : genou aligné au-dessus du pied, jamais de valgus.",
+  blocks:[
+    {lbl:'Réveil articulaire',items:[
+      {n:"Cercles de chevilles + montées de genoux",vol:'2 x 20s',w:20,r:10,x:2,ic:'mobilite_hanche'},
+      {n:"Pas chassés légers",vol:'2 allers-retours 8m',w:15,r:10,x:2,ic:'pas_chasses'},
+      {n:"Skipping bas rapide",vol:'2 x 15s',w:15,r:10,x:2,ic:'acceleration_progressive'},
+    ]},
+    {lbl:'Corps de séance — Agilité',items:[
+      {n:"Pas chassés défensifs",vol:'4 allers-retours 8-10m',w:15,r:35,x:4,ic:'pas_chasses',cue:"Genoux fléchis, poids sur l'avant des pieds, dos droit"},
+      {n:"Sprint + Arrêt Stoppé (Jump Stop)",vol:'5 répétitions',w:8,r:50,x:5,ic:'arret_stoppe',cue:"Genou aligné au-dessus du pied à l'arrêt"},
+      {n:"Feinte de départ (Jab Step)",vol:'4 séries de 6 (3/côté)',w:10,r:30,x:4,ic:'feinte_depart',cue:"Appui bas, regard relevé"},
+      {n:"Carioca (pas croisés)",vol:'4 allers-retours 8-10m',w:15,r:30,x:4,ic:'carioca',cue:"Hanches mobiles, ne pas se redresser"},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Marche + mobilité chevilles/genoux",vol:'4 min',w:240,r:0,x:1,ic:'mobilite_hanche',note:"Marche calme + quelques cercles de chevilles et flexions de genoux."}]},
+  ]}),
+S({id:'p3s8mer',banger:2,phase:3,week:8,day:'MERCREDI',date:'19/08/2026',title:'Suprême Fractionné & Navettes VMA #1',dur:'≈ 24 min · 1ères vraies navettes terrain',
+  safety:"Pivot : pied extérieur qui plante, genou aligné, pas de vrille du genou.",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Footwork + 2 navettes modérées pour roder le pivot",vol:'6 min',w:360,r:0,x:1,ic:'navette_pivot',note:"Footwork léger puis 2 navettes à allure modérée pour bien sentir le pivot avant d'accélérer."}]},
+    {lbl:'Bloc 1 — navette 12m + pivot 180°',items:[{n:"Ligne de fond ↔ lancers francs",vol:'8 répétitions',w:11,r:18,x:8,ic:'navette_pivot',cue:"2 Bangers répartis sur les 2 blocs",bangerEligible:true}]},
+    {lbl:'Bloc 2 — même navette',pre:150,items:[{n:"Ligne de fond ↔ lancers francs",vol:'8 répétitions',w:11,r:18,x:8,ic:'navette_pivot',bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Mobilité chevilles/genoux",vol:'4 min',w:240,r:0,x:1,ic:'mobilite_hanche',note:"Quelques cercles de chevilles et flexions de genoux pour terminer en douceur."}]},
+  ]}),
+S({id:'p3s8ven',phase:3,week:8,day:'VENDREDI',date:'21/08/2026',title:'Réveil Global & Mobilité #1',dur:'≈ 24 min · séance courte',
+  safety:"On lève le pied sur l'intensité pour arriver fraîches à la reprise.",
+  blocks:[
+    {lbl:'Mobilité articulaire',items:[{n:"Chevilles, genoux, hanches, colonne, épaules",vol:'8 min',w:480,r:0,x:1,ic:'mobilite_hanche',note:"Chevilles (cercles + flexions), genoux (rotations légères), hanches (cercles + ouvertures), colonne (rotations + chat-vache), épaules (cercles de bras)."}]},
+    {lbl:'Réveil musculaire léger',items:[
+      {n:"Squat lent (mobilité)",vol:'2 x 12 reps',w:40,r:30,x:2,ic:'squat_lent',cue:"Talons au sol, genoux dans l'axe des pieds"},
+      {n:"Fente douce (alternée)",vol:'2 x 8/jambe',w:25,r:30,x:2,ic:'fente_marchee'},
+      {n:"Gainage planche (léger)",vol:'2 x 25s',w:25,r:30,x:2,ic:'planche'},
+    ]},
+    {lbl:'Étirements actifs',items:[{n:"Ischios, quadriceps, mollets (dynamique)",vol:'5 min',w:300,r:0,x:1,ic:'etirement_dynamique',note:"Étirement dynamique ischios (balancers de jambe), quadriceps (talon-fesse en marchant), mollets — en mouvement, pas statique."}]},
+  ],
+  defi:{title:"🏆 Grand Défi Final d'Équipe — Étape 1",text:"Cumule un maximum de fentes en 2 minutes. Le score s'additionne au total de l'équipe via l'appli !",timed:{n:"Max fentes",vol:'1 x 2 min',w:120,r:0,x:1,ic:'fente_marchee'}}}),
+
+S({id:'p3s9lun',phase:3,week:9,day:'LUNDI',date:'24/08/2026',title:'Agilité, Dissociation & Vitesse d\'appuis #2',dur:'≈ 38 min · réactivité accrue',
+  safety:"Dernière semaine : le corps doit décider et freiner vite, pas juste exécuter un schéma connu.",
+  blocks:[
+    {lbl:'Réveil articulaire',items:[
+      {n:"Cercles de chevilles + montées de genoux",vol:'2 x 20s',w:20,r:10,x:2,ic:'mobilite_hanche'},
+      {n:"NOUVEAU — Doubles appuis rapides",vol:'3 x 12s',w:12,r:15,x:3,ic:'acceleration_progressive'},
+    ]},
+    {lbl:'Corps de séance',items:[
+      {n:"Pas chassés + changement de sens réactif",vol:'5 séries de 10s',w:10,r:30,x:5,ic:'pas_chasses',cue:"Posture basse maintenue même au changement de sens"},
+      {n:"Sprint + Arrêt + coupe à 45°",vol:'6 répétitions',w:8,r:50,x:6,ic:'arret_stoppe',cue:"Genou aligné à l'arrêt ET sur le 1er appui de la coupe"},
+      {n:"Feintes enchaînées (Jab + crossover)",vol:'4 séries de 4',w:12,r:33,x:4,ic:'feinte_depart',cue:"Enchaînement fluide, pas de temps mort"},
+      {n:"NOUVEAU — Carioca + sprint sortie 5m",vol:'4 allers-retours',w:15,r:30,x:4,ic:'carioca',cue:"Accélération propre dès la sortie du carioca"},
+    ]},
+    {lbl:'Retour au calme',items:[{n:"Ressenti articulaire (chevilles, genoux)",vol:'4 min',w:240,r:0,x:1,ic:'mobilite_hanche',note:"Prends un instant pour sentir comment réagissent tes chevilles et tes genoux après la séance."}]},
+  ]}),
+S({id:'p3s9mer',banger:3,phase:3,week:9,day:'MERCREDI',date:'26/08/2026',title:'Suprême Fractionné & Navettes VMA #2',dur:'≈ 27 min · pic VMA Basket',
+  safety:"On ferme la boucle : du 15s/15s générique jusqu'à la navette spécifique terrain.",
+  blocks:[
+    {lbl:'Échauffement',items:[{n:"Footwork léger",vol:'6 min',w:360,r:0,x:1,ic:'navette_pivot',note:"Petits appuis rythmés et légers pour activer les jambes sans les fatiguer."}]},
+    {lbl:'Bloc 1 — navette 12m',items:[{n:"Ligne de fond ↔ lancers francs",vol:'10 répétitions',w:11,r:18,x:10,ic:'navette_pivot',cue:"3 Bangers — le tout dernier de l'été !",bangerEligible:true}]},
+    {lbl:'Bloc 2 — même navette',pre:120,items:[{n:"Ligne de fond ↔ lancers francs",vol:'10 répétitions',w:11,r:18,x:10,ic:'navette_pivot',bangerEligible:true}]},
+    {lbl:'Bloc 3 — NOUVEAU, navette 14m',pre:120,items:[{n:"Ligne de fond ↔ mi-terrain",vol:'6 répétitions',w:13,r:20,x:6,ic:'navette_pivot',cue:"La navette la plus proche d'un sprint de transition complet",bangerEligible:true}]},
+    {lbl:'Retour au calme',items:[{n:"Mobilité chevilles/genoux",vol:'4 min',w:240,r:0,x:1,ic:'mobilite_hanche',note:"Quelques cercles de chevilles et flexions de genoux pour terminer en douceur."}]},
+  ]}),
+S({id:'p3s9ven',phase:3,week:9,day:'VENDREDI',date:'28/08/2026',title:'Réveil Global & Grand Défi — Finale de l\'été',dur:'≈ 25 min · dernière séance avant la reprise',
+  safety:"Bravo pour l'été : on referme sur l'agilité et la fraîcheur articulaire.",
+  blocks:[
+    {lbl:'Mobilité articulaire',items:[{n:"Même flow que la semaine 8",vol:'8 min',w:480,r:0,x:1,ic:'mobilite_hanche',note:"La même routine articulaire complète que la Semaine 8 — on la connaît, on la fait bien."}]},
+    {lbl:'Réveil musculaire léger',items:[
+      {n:"Squat lent",vol:'2 x 14 reps',w:42,r:30,x:2,ic:'squat_lent'},
+      {n:"Fente douce (alternée)",vol:'2 x 10/jambe',w:28,r:30,x:2,ic:'fente_marchee'},
+      {n:"Gainage planche (léger)",vol:'2 x 30s',w:30,r:30,x:2,ic:'planche'},
+    ]},
+    {lbl:'Étirements actifs',items:[{n:"Ischios, quadriceps, mollets",vol:'5 min',w:300,r:0,x:1,ic:'etirement_dynamique',note:"Étirement dynamique ischios (balancers de jambe), quadriceps (talon-fesse en marchant), mollets."}]},
+  ],
+  defi:{title:"🏆 GRAND DÉFI FINAL D'ÉQUIPE",text:"Cumule ton temps de planche max (1 tentative) + ton nombre de fentes en 2 min. Score additionné au total d'équipe depuis la semaine 8 — badge « Summer Hoops 2026 » à débloquer !",timed:{n:"Max fentes (Grand Défi)",vol:'1 x 2 min',w:120,r:0,x:1,ic:'fente_marchee'}}}),
+];
+
+/* =====================================================================
+   APPLICATION
+   ===================================================================== */
+var toastEl = document.getElementById('toast');
+var toastTimer;
+function showToast(msg){
+  clearTimeout(toastTimer);
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 2400);
+}
+
+var navBtns = document.querySelectorAll('.nav-btn');
+var views = document.querySelectorAll('.view');
+function goToView(name){
+  navBtns.forEach(function(b){ b.classList.toggle('active', b.dataset.view === name); });
+  views.forEach(function(v){ v.classList.toggle('active', v.id === 'view-' + name); });
+  if(name !== 'session'){ stopTicking(); }
+  window.scrollTo(0,0);
+}
+navBtns.forEach(function(btn){ btn.addEventListener('click', function(){ goToView(btn.dataset.view); }); });
+document.getElementById('seeAllDefis').addEventListener('click', function(){ goToView('defis'); });
+document.getElementById('sessBackBtn').addEventListener('click', function(){ goToView('home'); });
+
+/* ---------- Tuto exercice (délégation d'événement = un seul listener, jamais dupliqué) ---------- */
+document.getElementById('blocksContainer').addEventListener('click', function(e){
+  var btn = e.target.closest('.ex-tuto-btn');
+  if(btn){ openTuto(btn.dataset.ic, btn.dataset.name, btn.dataset.note); }
+});
+function splitNoteToSteps(note){
+  var parts = note.split(/\s*—\s*|,\s+/).map(function(s){ return s.trim(); }).filter(Boolean);
+  return parts.length ? parts : [note];
+}
+function openTuto(ic, name, note){
+  // Priorité au texte réel du bloc (note) quand il existe : l'icône n'est qu'un visuel
+  // générique pour ces blocs d'échauffement/retour au calme, pas l'exercice exact.
+  var steps = note ? splitNoteToSteps(note) : (TUTORIALS[ic] || ["Suis les consignes indiquées sur la fiche de la séance."]);
+  document.getElementById('tutoIco').className = 'tuto-ico ' + categoryIcoClass(ic);
+  document.getElementById('tutoIco').innerHTML = svgIcon(ic);
+  document.getElementById('tutoName').textContent = name;
+  document.getElementById('tutoSteps').innerHTML = steps.map(function(s){ return '<li>'+s+'</li>'; }).join('');
+  document.getElementById('tutoOverlay').classList.add('show');
+}
+function closeTuto(){ document.getElementById('tutoOverlay').classList.remove('show'); }
+document.getElementById('tutoClose').addEventListener('click', closeTuto);
+document.getElementById('tutoGotIt').addEventListener('click', closeTuto);
+document.getElementById('tutoOverlay').addEventListener('click', function(e){ if(e.target.id==='tutoOverlay'){ closeTuto(); } });
+
+/* ---------- Sélection de semaine -> panneau de séances ---------- */
+var weekPanel = document.getElementById('weekPanel');
+var weekPanelTitle = document.getElementById('weekPanelTitle');
+var weekPanelList = document.getElementById('weekPanelList');
+
+function dayIconClass(day){ return day==='LUNDI' ? 'ic-lundi' : (day==='MERCREDI' ? 'ic-mercredi' : 'ic-vendredi'); }
+function dayMainIcon(day){ return day==='LUNDI' ? 'squat_bulgare' : (day==='MERCREDI' ? 'navette_pivot' : 'planche'); }
+
+function renderWeekPanel(week){
+  var sessions = SESSIONS.filter(function(s){ return s.week === week; }).sort(function(a,b){
+    var order = {LUNDI:0,MERCREDI:1,VENDREDI:2};
+    return order[a.day]-order[b.day];
+  });
+  weekPanelTitle.textContent = 'Semaine ' + week + ' · ' + sessions.length + ' séance' + (sessions.length>1?'s':'');
+  weekPanelList.innerHTML = sessions.map(function(s){
+    return '<button class="sess-card" data-id="'+s.id+'">'+
+      '<span class="sess-ico '+dayIconClass(s.day)+'">'+svgIcon(dayMainIcon(s.day))+'</span>'+
+      '<span class="sess-meta">'+
+        '<span class="sess-day">'+s.day+' · '+s.date+'</span>'+
+        '<span class="sess-name">'+s.title+'</span>'+
+      '</span>'+
+      '<span class="sess-chevron"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></span>'+
+    '</button>';
+  }).join('');
+  weekPanel.classList.add('show');
+  Array.prototype.forEach.call(weekPanelList.querySelectorAll('.sess-card'), function(card){
+    card.addEventListener('click', function(){ openSession(card.dataset.id); });
+  });
+  weekPanel.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('.chip.selectable'), function(chip){
+  chip.addEventListener('click', function(){
+    var card = chip.closest('.phase-card');
+    Array.prototype.forEach.call(card.querySelectorAll('.chip.selectable'), function(c){ c.classList.remove('selected'); });
+    chip.classList.add('selected');
+    renderWeekPanel(Number(chip.dataset.week));
+  });
+});
+
+/* ---------- Construction de la file du chrono ---------- */
+function buildQueue(session){
+  var steps = [];
+  session.blocks.forEach(function(block, bi){
+    if(block.pre){
+      steps.push({type:'rest', dur:block.pre, exName:'Récupération avant le bloc suivant', sub:block.lbl, ic:(block.items[0]&&block.items[0].ic)||'planche'});
+    }
+    block.items.forEach(function(item){
+      var rounds = item.x || 1;
+      for(var i=0;i<rounds;i++){
+        if(item.w>0){ steps.push({type:'work', dur:item.w, exName:item.n, sub:block.lbl+(rounds>1?' · '+(i+1)+'/'+rounds:''), ic:item.ic, cue:item.cue, bangerOk:!!item.bangerEligible}); }
+        var isLast = (i===rounds-1);
+        if(item.r>0 && !(isLast && bi===session.blocks.length-1)){
+          steps.push({type:'rest', dur:item.r, exName:item.n, sub:'Récupération', ic:item.ic});
+        }
+      }
+    });
+  });
+  // Le défi chronométré (Golden Hour Plank, Grand Défi, Test final...) n'est PAS ajouté ici :
+  // il a son propre bouton "Lancer le défi" et son propre mini-minuteur (voir launchDefi()).
+  if(steps.length && steps[0].type==='work'){
+    steps.unshift({type:'rest', dur:5, exName:steps[0].exName, sub:'Prête ?', ic:steps[0].ic, isPrep:true});
+  }
+  resolveBangers(session, steps);
+  return steps;
+}
+
+/* ---------- Résolution des déclenchements "Alerte Banger" (Playlist Lockdown) ---------- */
+function resolveBangers(session, steps){
+  if(!session.banger) return;
+  var n = Array.isArray(session.banger) ? (session.banger[0] + Math.floor(Math.random()*(session.banger[1]-session.banger[0]+1))) : session.banger;
+  var eligible = steps.filter(function(s){ return s.type==='work' && s.bangerOk; });
+  if(!eligible.length) return;
+  if(eligible.length===1){
+    // Bloc continu (une seule longue plage d'effort) : on programme N moments aléatoires DANS la durée.
+    eligible[0].bangerMoments = randomSpreadTimes(eligible[0].dur, n);
+  } else {
+    // Plusieurs répétitions distinctes : on tire N répétitions au hasard, chacune devient LE Banger.
+    var pool = eligible.slice();
+    for(var i=pool.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=pool[i]; pool[i]=pool[j]; pool[j]=t; }
+    pool.slice(0, Math.min(n,pool.length)).forEach(function(s){ s.isBanger = true; });
+  }
+}
+function randomSpreadTimes(duration, n){
+  // n instants répartis dans [15%, 85%] de la durée, espacés d'au moins 1/(n+1) de la durée.
+  var lo = duration*0.15, hi = duration*0.85;
+  var slot = (hi-lo)/n;
+  var out = [];
+  for(var i=0;i<n;i++){ out.push(lo + i*slot + Math.random()*slot*0.7); }
+  return out;
+}
+function buildDefiQueue(defi){
+  var steps = [];
+  var t = defi.timed;
+  var rounds = t.x||1;
+  for(var i=0;i<rounds;i++){
+    steps.push({type:'work', dur:t.w, exName:t.n, sub:'Défi · '+(i+1)+'/'+rounds, ic:t.ic});
+    if(t.r>0 && i<rounds-1){ steps.push({type:'rest', dur:t.r, exName:t.n, sub:'Récupération', ic:t.ic}); }
+  }
+  steps.unshift({type:'rest', dur:5, exName:t.n, sub:'Prête ?', ic:t.ic, isPrep:true});
+  return steps;
+}
+
+/* ---------- Fenêtre horaire Golden Hour (20h30 → 21h45, horloge réelle du téléphone) ---------- */
+function goldenHourStatus(){
+  var now = new Date();
+  var mins = now.getHours()*60 + now.getMinutes();
+  var start = 20*60+30, end = 21*60+45;
+  if(mins>=start && mins<=end){ return {open:true, msg:"✅ C'est ouvert — golden hour en cours !"}; }
+  var diff = mins<start ? (start-mins) : null;
+  if(diff!==null){
+    var h = Math.floor(diff/60), m = diff%60;
+    return {open:false, msg:'🔒 Ouvre dans ' + (h>0?h+'h':'') + m + 'min (20h30 → 21h45)'};
+  }
+  return {open:false, msg:'🔒 Fermé pour aujourd\'hui — reviens entre 20h30 et 21h45 !'};
+}
+
+/* ---------- Rendu de la fiche de séance ---------- */
+var currentSession = null;
+var queue = [];
+var stepIndex = 0;
+var remaining = 0;
+var endAt = 0;
+var tickHandle = null;
+var isPaused = false;
+var lastBeepSecond = null;
+var audioCtx = null;
+var defiMode = false;
+
+function openSession(id){
+  var s = SESSIONS.find(function(x){ return x.id === id; });
+  if(!s) return;
+  currentSession = s;
+  defiMode = false;
+  resetTimerState();
+
+  document.getElementById('sessHeaderDay').textContent = s.day + ' · ' + s.date;
+  document.getElementById('sessHeaderTitle').textContent = s.title;
+  document.getElementById('sessDur').textContent = 'Durée ' + s.dur;
+  document.getElementById('sessSafety').textContent = s.safety;
+
+  var html = '';
+  s.blocks.forEach(function(block){
+    html += '<div class="block-label">'+block.lbl+'</div>';
+    block.items.forEach(function(item){
+      html += '<div class="ex-card" data-exname="'+item.n.replace(/"/g,'&quot;')+'">'+
+        '<span class="ex-ico '+ (currentSession.day? '' : '') + categoryIcoClass(item.ic) +'">'+svgIcon(item.ic)+'</span>'+
+        '<span>'+
+          '<div class="ex-name">'+item.n+'</div>'+
+          '<div class="ex-vol">'+item.vol+(item.x>1?' · x'+item.x:'')+'</div>'+
+          (item.note ? '<div class="ex-note">💡 '+item.note+'</div>' : '')+
+          (item.cue ? '<div class="ex-cue">⚠️ '+item.cue+'</div>' : '')+
+          '<button class="ex-tuto-btn" data-ic="'+item.ic+'" data-name="'+item.n.replace(/"/g,'&quot;')+'"'+(item.note?' data-note="'+item.note.replace(/"/g,'&quot;')+'"':'')+'>📖 Voir le tuto</button>'+
+        '</span>'+
+      '</div>';
+    });
+  });
+  document.getElementById('blocksContainer').innerHTML = html;
+  renderDefiInfo(s);
+
+  queue = buildQueue(s);
+  stepIndex = -1;
+  renderIdleTimer();
+  goToView('session');
+}
+
+function renderDefiInfo(s){
+  var box = document.getElementById('defiInfoContainer');
+  if(!s.defi){ box.innerHTML = ''; return; }
+  var html = '<div class="defi-info"><div class="di-title">'+s.defi.title+'</div><div class="di-text">'+s.defi.text+'</div>';
+  if(s.defi.timed){
+    var gated = !!s.defi.timed.gated;
+    if(gated){
+      var st = goldenHourStatus();
+      html += '<div class="di-status" id="diStatus" style="margin-top:8px;font-size:11.5px;font-weight:700;color:'+(st.open?'#34E8C9':'#FFA94D')+'">'+st.msg+'</div>';
+    }
+    html += '<button class="btn btn-start" id="btnLaunchDefi" style="margin-top:12px;width:100%;">'+(gated?'🌅':'🏆')+' Lancer le défi</button>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+  if(s.defi.timed){
+    document.getElementById('btnLaunchDefi').addEventListener('click', function(){ launchDefi(s.defi); });
+  }
+}
+
+function launchDefi(defi){
+  if(defi.timed.gated){
+    var st = goldenHourStatus();
+    if(!st.open){
+      showToast(st.msg.replace('🔒 ',''));
+      return;
+    }
+  }
+  defiMode = true;
+  queue = buildDefiQueue(defi);
+  stepIndex = -1;
+  document.querySelector('.timer-card').scrollIntoView({behavior:'smooth', block:'start'});
+  ensureAudio();
+  stepIndex = 0;
+  beginStep();
+  renderRunningControls();
+}
+
+function categoryIcoClass(ic){
+  var cyanSet = ['squat_bulgare','rdl_unipodal','fente_marchee','pont_fessier','pont_fessier_unilateral','y_balance','stick_landing','hop_hold','squat_jump','skater_jump','tuck_jump','elan_saut','bond_unipodal','pas_chasses','arret_stoppe','feinte_depart','carioca'];
+  var orangeSet = ['navette_pivot','acceleration_progressive'];
+  if(cyanSet.indexOf(ic)>=0) return 'ic-lundi';
+  if(orangeSet.indexOf(ic)>=0) return 'ic-mercredi';
+  return 'ic-vendredi';
+}
+
+/* ---------- Audio : bips natifs (Web Audio API) ---------- */
+function ensureAudio(){
+  if(!audioCtx){
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if(Ctx) audioCtx = new Ctx();
+  }
+  if(audioCtx && audioCtx.state === 'suspended'){ audioCtx.resume(); }
+}
+function beep(freq, durMs, vol){
+  if(!audioCtx) return;
+  vol = vol || 0.35;
+  var osc = audioCtx.createOscillator();
+  var gain = audioCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = freq;
+  osc.connect(gain).connect(audioCtx.destination);
+  var now = audioCtx.currentTime;
+  gain.gain.setValueAtTime(vol, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + durMs/1000);
+  osc.start(now);
+  osc.stop(now + durMs/1000 + 0.03);
+}
+function shortBeep(){ beep(400,150,0.32); }   // 3 bips courts du compte à rebours
+function longBeep(){ beep(800,420,0.4); }     // signal d'effort
+function endEffortBeep(){ beep(600,200,0.34); } // signal fin d'effort -> repos
+
+/* ---------- Moteur du chrono ---------- */
+function resetTimerState(){
+  stopTicking();
+  stepIndex = -1;
+  isPaused = false;
+  document.getElementById('btnValidate').style.display = 'none';
+  document.getElementById('timerControls').style.display = 'flex';
+}
+function stopTicking(){
+  if(tickHandle){ clearInterval(tickHandle); tickHandle = null; }
+  clearBangerTimeouts();
+}
+var bangerTimeoutHandles = [];
+function clearBangerTimeouts(){ bangerTimeoutHandles.forEach(function(h){ clearTimeout(h); }); bangerTimeoutHandles = []; }
+function fmtTime(s){
+  s = Math.max(0, Math.ceil(s));
+  var m = Math.floor(s/60), sec = s%60;
+  return (m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
+}
+function renderIdleTimer(){
+  document.getElementById('timerPhaseLbl').textContent = 'PRÊTE ?';
+  document.getElementById('timerPhaseLbl').className = 'timer-phase-lbl prep';
+  document.getElementById('timerTime').textContent = '00:00';
+  document.getElementById('timerExName').textContent = "Touche « Démarrer l'exercice »";
+  document.getElementById('timerExSub').textContent = queue.length ? (queue.length-1)+' étapes guidées au programme' : '';
+  document.getElementById('stepCounter').textContent = '';
+  setRing(1,'#FFA94D');
+  document.getElementById('timerControls').innerHTML = '<button class="btn btn-start" id="btnStart">▶ Démarrer l\'exercice</button>';
+  document.getElementById('btnStart').addEventListener('click', startSession);
+}
+function setRing(pct, color){
+  var fg = document.getElementById('timerRingFg');
+  var circumference = 465;
+  fg.style.stroke = color;
+  fg.style.strokeDashoffset = String(circumference * (1-pct));
+}
+function startSession(){
+  defiMode = false;
+  ensureAudio();
+  if(!queue.length){ return; }
+  stepIndex = 0;
+  beginStep();
+  renderRunningControls();
+}
+function renderRunningControls(){
+  document.getElementById('timerControls').innerHTML =
+    '<button class="btn btn-ghost" id="btnPause">⏸ Pause</button>'+
+    '<button class="btn-skip" id="btnSkip">⏭ Passer</button>';
+  document.getElementById('btnPause').addEventListener('click', togglePause);
+  document.getElementById('btnSkip').addEventListener('click', function(){ nextStep(); });
+}
+function beginStep(){
+  stopTicking();
+  lastBeepSecond = null;
+  var step = queue[stepIndex];
+  if(!step){ finishSession(); return; }
+  remaining = step.dur;
+  endAt = Date.now() + remaining*1000;
+
+  var lbl = document.getElementById('timerPhaseLbl');
+  if(step.isPrep){ lbl.textContent = 'PRÉPARATION'; lbl.className = 'timer-phase-lbl prep'; }
+  else if(step.type==='work'){
+    lbl.textContent = 'EFFORT'; lbl.className = 'timer-phase-lbl effort'; longBeep();
+    if(step.isBanger){ triggerBangerAlert(); }
+    if(step.bangerMoments){
+      step.bangerMoments.forEach(function(t){
+        bangerTimeoutHandles.push(setTimeout(triggerBangerAlert, t*1000));
+      });
+    }
+  }
+  else { lbl.textContent = 'REPOS'; lbl.className = 'timer-phase-lbl repos'; endEffortBeep(); }
+
+  document.getElementById('timerExName').textContent = step.exName;
+  document.getElementById('timerExSub').textContent = step.sub || '';
+  document.getElementById('stepCounter').textContent = 'Étape ' + (stepIndex+1) + ' / ' + queue.length;
+  updateExCardHighlight(step.exName);
+  renderTick();
+  tickHandle = setInterval(renderTick, 200);
+}
+function updateExCardHighlight(name){
+  Array.prototype.forEach.call(document.querySelectorAll('.ex-card'), function(card){
+    card.classList.toggle('current', card.dataset.exname === name);
+  });
+}
+function renderTick(){
+  if(isPaused) return;
+  var step = queue[stepIndex];
+  if(!step) return;
+  remaining = (endAt - Date.now())/1000;
+  if(remaining < 0) remaining = 0;
+  var displaySec = Math.ceil(remaining);
+
+  document.getElementById('timerTime').textContent = fmtTime(remaining);
+  setRing(remaining/step.dur, step.type==='work' ? '#FFA94D' : '#34E8C9');
+
+  if(step.type==='rest' && displaySec>0 && displaySec<=3 && displaySec!==lastBeepSecond){
+    lastBeepSecond = displaySec;
+    shortBeep();
+    document.getElementById('timerTime').classList.remove('pulse');
+    void document.getElementById('timerTime').offsetWidth;
+    document.getElementById('timerTime').classList.add('pulse');
+  }
+  if(remaining<=0){
+    nextStep();
+  }
+}
+function nextStep(){
+  stepIndex++;
+  if(stepIndex >= queue.length){ finishSession(); return; }
+  beginStep();
+}
+function togglePause(){
+  isPaused = !isPaused;
+  var btn = document.getElementById('btnPause');
+  if(isPaused){
+    stopTicking();
+    btn.textContent = '▶ Reprendre';
+  } else {
+    endAt = Date.now() + remaining*1000;
+    btn.textContent = '⏸ Pause';
+    tickHandle = setInterval(renderTick, 200);
+  }
+}
+function finishSession(){
+  stopTicking();
+  var lbl = document.getElementById('timerPhaseLbl');
+  if(defiMode){
+    lbl.textContent = 'DÉFI RELEVÉ 🌅';
+    document.getElementById('timerExName').textContent = 'Défi terminé — bravo !';
+    document.getElementById('btnValidate').textContent = 'Fermer le défi';
+  } else {
+    lbl.textContent = 'TERMINÉ 🎉';
+    document.getElementById('timerExName').textContent = 'Séance terminée — beau travail !';
+    document.getElementById('btnValidate').textContent = 'Valider ma séance ✅';
+  }
+  lbl.className = 'timer-phase-lbl effort';
+  document.getElementById('timerTime').textContent = '00:00';
+  document.getElementById('timerExSub').textContent = '';
+  document.getElementById('stepCounter').textContent = '';
+  setRing(1,'#34E8C9');
+  document.getElementById('timerControls').style.display = 'none';
+  document.getElementById('btnValidate').style.display = 'block';
+  beep(900,250,0.4);
+  setTimeout(function(){ beep(1100,350,0.4); }, 260);
+}
+document.getElementById('btnValidate').addEventListener('click', function(){
+  if(defiMode){
+    addPoints(15);
+    showToast('Défi relevé 🌅 +15 pts ! (Total : ' + totalPoints + ' pts)');
+    defiMode = false;
+    queue = buildQueue(currentSession);
+    stepIndex = -1;
+    renderIdleTimer();
+  } else {
+    addPoints(10);
+    showCongrats(currentSession, 10);
+  }
+});
+
+/* ---------- Ecran Felicitations + partage WhatsApp dynamique ---------- */
+function dayLabel(day){
+  var map = {LUNDI:'Lundi', MERCREDI:'Mercredi', VENDREDI:'Vendredi'};
+  return map[day] || day;
+}
+function buildWhatsappMessage(session, earned){
+  var name = currentPlayerName || "une joueuse de l'équipe";
+  var lines = [
+    "Summer Challenge U18F 🏀 : Séance du " + dayLabel(session.day) + " validée !",
+    "+" + earned + " points pour " + name + " (Total : " + totalPoints + " pts) !",
+    "Prête pour la rentrée fin août 🔥",
+    "Qui fait sa séance aujourd'hui ? 👀"
+  ];
+  return lines.join("\n");
+}
+function showCongrats(session, earned){
+  document.getElementById('congratsSessTitle').textContent = session.day + ' · ' + session.title;
+  document.querySelector('.congrats-pts').innerHTML = '+' + earned + ' PTS <span>· Total cumulé : ' + totalPoints + ' pts</span>';
+  var msg = buildWhatsappMessage(session, earned);
+  document.getElementById('btnWhatsapp').href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(msg);
+  goToView('congrats');
+}
+document.getElementById('btnCongratsHome').addEventListener('click', function(){ goToView('home'); });
+
+/* ---------- Points & persistance (window.storage = équivalent localStorage pour les Artifacts) ---------- */
+var totalPoints = 0;
+function renderPoints(){ document.getElementById('pointsValue').textContent = '🔥 ' + totalPoints + ' PTS'; }
+function addPoints(n){
+  totalPoints += n;
+  renderPoints();
+  try { window.storage.set('totalPoints', String(totalPoints), false); } catch(e){ /* stockage indisponible */ }
+}
+async function initPoints(){
+  try {
+    var res = await window.storage.get('totalPoints', false);
+    if(res && res.value){ totalPoints = parseInt(res.value, 10) || 0; }
+  } catch(e){ totalPoints = 0; }
+  renderPoints();
+}
+window.setSummerPoints = function(value){ totalPoints = value; renderPoints(); };
+
+/* ---------- Alerte Banger (Playlist Lockdown) ---------- */
+var bangersSurvived = 0;
+var bangerAutoHide = null;
+function triggerBangerAlert(){
+  bangersSurvived++;
+  try { window.storage.set('bangersSurvived', String(bangersSurvived), false); } catch(e){}
+  var el = document.getElementById('bangerOverlay');
+  el.classList.add('show');
+  beep(1000,120,0.32);
+  setTimeout(function(){ beep(1300,160,0.32); }, 130);
+  clearTimeout(bangerAutoHide);
+  bangerAutoHide = setTimeout(function(){ el.classList.remove('show'); }, 3200);
+}
+async function initBangerCount(){
+  try {
+    var res = await window.storage.get('bangersSurvived', false);
+    if(res && res.value){ bangersSurvived = parseInt(res.value, 10) || 0; }
+  } catch(e){ bangersSurvived = 0; }
+}
+
+/* ---------- Summer Challenges : détail + interactivité ---------- */
+var DEFI_META = {
+  playlist: {emoji:'🎵', name:'Playlist Lockdown'},
+  goldenhour: {emoji:'🌅', name:'Golden Hour Plank'},
+  icecoffee: {emoji:'🧊', name:'Ice Coffee Aesthetic'},
+  grand: {emoji:'🏆', name:"Grand Défi d'Équipe"}
+};
+function todayKey(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+var iceCoffeeDoneToday = false;
+
+function openDefiDetail(key){
+  var meta = DEFI_META[key];
+  if(!meta) return;
+  document.getElementById('defiDetailEmoji').textContent = meta.emoji;
+  document.getElementById('defiDetailName').textContent = meta.name;
+  var desc = document.getElementById('defiDetailDesc');
+  var status = document.getElementById('defiDetailStatus');
+  var action = document.getElementById('defiDetailAction');
+  action.style.display = 'none';
+  action.onclick = null;
+
+  if(key==='playlist'){
+    desc.textContent = "Pendant les séances de cardio du mercredi, l'appli déclenche au hasard le « Mode Banger » : l'écran flashe, et tu dois pousser ton intensité au maximum jusqu'à la fin du titre.";
+    status.innerHTML = '🔥 Bangers survécus depuis le début de l\'été : <b>' + bangersSurvived + '</b>';
+  } else if(key==='goldenhour'){
+    desc.textContent = "Un gainage chronométré qui ne se déverrouille qu'au coucher du soleil, entre 20h30 et 21h45. Lance-le depuis une séance du vendredi (Phase 1) pour gagner +15 pts.";
+    var st = goldenHourStatus();
+    status.innerHTML = st.msg;
+  } else if(key==='icecoffee'){
+    var done = false;
+    try { done = (window.__iceCoffeeLast === todayKey()); } catch(e){}
+    desc.textContent = "Après une grosse séance, prépare ta boisson de récupération la plus stylée (eau, menthe, citron, thé glacé maison) et partage la photo au groupe.";
+    if(window.__iceCoffeeLast === todayKey()){
+      status.innerHTML = '✅ Déjà validé aujourd\'hui — bravo, reviens demain !';
+    } else {
+      status.innerHTML = 'Pas encore fait aujourd\'hui.';
+      action.style.display = 'block';
+      action.textContent = '✅ Marquer comme fait (+15 pts)';
+      action.onclick = function(){
+        addPoints(15);
+        window.__iceCoffeeLast = todayKey();
+        try { window.storage.set('iceCoffeeLastDate', todayKey(), false); } catch(e){}
+        showToast('Ice Coffee validé 🧊 +15 pts !');
+        closeDefiDetail();
+      };
+    }
+  } else if(key==='grand'){
+    desc.textContent = "Pendant les 2 dernières semaines (Phase 3), cumulez fentes et temps de planche en équipe via l'appli. Objectif collectif affiché en direct sur les séances du vendredi.";
+    status.innerHTML = '🏆 Rejoins l\'équipe directement depuis les séances du vendredi de la Semaine 8 et 9.';
+  }
+  document.getElementById('defiDetailOverlay').classList.add('show');
+}
+function closeDefiDetail(){ document.getElementById('defiDetailOverlay').classList.remove('show'); }
+document.getElementById('defiDetailClose').addEventListener('click', closeDefiDetail);
+document.getElementById('defiDetailOverlay').addEventListener('click', function(e){ if(e.target.id==='defiDetailOverlay'){ closeDefiDetail(); } });
+Array.prototype.forEach.call(document.querySelectorAll('.defi-card'), function(card){
+  card.addEventListener('click', function(){ openDefiDetail(card.dataset.key); });
+});
+Array.prototype.forEach.call(document.querySelectorAll('.defi-mini'), function(card){
+  card.addEventListener('click', function(){ openDefiDetail(card.dataset.key); });
+});
+async function initIceCoffee(){
+  try {
+    var res = await window.storage.get('iceCoffeeLastDate', false);
+    if(res && res.value){ window.__iceCoffeeLast = res.value; }
+  } catch(e){ /* rien d'enregistré encore */ }
+}
+
+/* ---------- Prenom de la joueuse (stockage persistant de l'artifact) ---------- */
+var currentPlayerName = null;
+function applyPlayerName(name){
+  currentPlayerName = name;
+  document.getElementById('greetName').textContent = 'Hello ' + name + ' 👋';
+  document.getElementById('avatarInitial').textContent = name.charAt(0).toUpperCase();
+}
+function showOnboarding(){
+  document.getElementById('onboardOverlay').classList.add('show');
+  setTimeout(function(){ document.getElementById('onboardInput').focus(); }, 300);
+}
+function hideOnboarding(){ document.getElementById('onboardOverlay').classList.remove('show'); }
+function submitOnboarding(){
+  var input = document.getElementById('onboardInput');
+  var name = input.value.trim();
+  if(!name){ input.style.borderColor = '#FF5F6D'; input.focus(); return; }
+  applyPlayerName(name);
+  hideOnboarding();
+  try { window.storage.set('playerName', name, false); } catch(e){ /* stockage indisponible, on continue quand meme */ }
+}
+document.getElementById('onboardBtn').addEventListener('click', submitOnboarding);
+document.getElementById('onboardInput').addEventListener('keydown', function(e){ if(e.key==='Enter'){ submitOnboarding(); } });
+
+async function initPlayerName(){
+  try {
+    var res = await window.storage.get('playerName', false);
+    if(res && res.value){ applyPlayerName(res.value); return; }
+  } catch(e){ /* pas de prenom enregistre -> onboarding */ }
+  showOnboarding();
+}
+
+/* ---------- Démarrage de l'application ---------- */
+initPlayerName();
+initPoints();
+initBangerCount();
+initIceCoffee();
+</script>
+
+</body>
+</html>
